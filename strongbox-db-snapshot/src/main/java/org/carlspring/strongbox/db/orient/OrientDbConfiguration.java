@@ -1,6 +1,4 @@
-package org.carlspring.strongbox.db.config;
-
-import org.carlspring.strongbox.db.OrientDbProperties;
+package org.carlspring.strongbox.db.orient;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -11,14 +9,13 @@ import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OrientDB;
 import com.orientechnologies.orient.core.db.OrientDBConfig;
 import com.orientechnologies.orient.jdbc.OrientDataSource;
-import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -56,6 +53,7 @@ class OrientDbConfiguration
     }
 
     @Bean
+    @LiquibaseDataSource
     DataSource dataSource(ODatabasePool pool,
                           OrientDB orientDB)
     {
@@ -70,16 +68,6 @@ class OrientDbConfiguration
         ReflectionUtils.setField(poolField, ds, pool);
 
         return ds;
-    }
-
-    @Bean(name = "liquibase")
-    public SpringLiquibase springLiquibase(ResourceLoader resourceLoader, DataSource dataSource)
-    {
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setResourceLoader(resourceLoader);
-        liquibase.setChangeLog("classpath:/db/changelog/db.changelog-master.xml");
-        return liquibase;
     }
 
     @Bean(destroyMethod = "close")

@@ -1,0 +1,17 @@
+spring:
+  main:
+    web-application-type: NONE
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+strongbox:
+  orientdb:
+    protocol: remote
+    host: 127.0.0.1
+    port: "2025"
+    database: strongbox
+    username: admin
+    password: password
+    path: db
+logging:
+  level:
+    liquibase: INFO

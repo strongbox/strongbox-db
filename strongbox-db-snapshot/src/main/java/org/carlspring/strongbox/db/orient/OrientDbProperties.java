@@ -1,4 +1,4 @@
-package org.carlspring.strongbox.db;
+package org.carlspring.strongbox.db.orient;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

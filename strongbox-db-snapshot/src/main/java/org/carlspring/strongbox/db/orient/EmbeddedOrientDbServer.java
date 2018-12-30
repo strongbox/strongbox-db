@@ -1,6 +1,4 @@
-package org.carlspring.strongbox.db.server;
-
-import org.carlspring.strongbox.db.OrientDbProperties;
+package org.carlspring.strongbox.db.orient;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
