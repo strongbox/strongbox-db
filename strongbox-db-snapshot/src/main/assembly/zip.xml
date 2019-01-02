@@ -9,6 +9,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/db/strongbox</directory>
+            <outputDirectory>strongbox</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>
