@@ -11,7 +11,7 @@ strongbox:
     database: strongbox
     username: admin
     password: password
-    path: db
+    path: @strongbox.orientdb.path@
 logging:
   level:
     liquibase: INFO
