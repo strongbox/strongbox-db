@@ -6,9 +6,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>strongbox-db</artifactId>
         <groupId>org.carlspring.strongbox</groupId>
+        <artifactId>strongbox-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <artifactId>strongbox-db-snapshot</artifactId>
@@ -126,6 +127,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
