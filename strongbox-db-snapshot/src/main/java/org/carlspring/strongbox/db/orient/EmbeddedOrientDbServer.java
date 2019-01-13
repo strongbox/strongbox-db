@@ -5,7 +5,6 @@ import javax.annotation.PreDestroy;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
 import com.orientechnologies.orient.server.config.*;
@@ -46,6 +45,9 @@ public class EmbeddedOrientDbServer
 
         log.info(String.format("Initialized Embedded OrientDB server for [%s]", database));
 
+        // Don't touch below line. Don't move it down the code. It needs to be called before OServerMain.create()
+        System.setProperty("network.binary.maxLength", "64000");
+
         server = OServerMain.create();
         serverConfiguration = new OServerConfiguration();
 
@@ -79,7 +81,6 @@ public class EmbeddedOrientDbServer
         properties.add(buildProperty("server.database.path", orientDbProperties.getPath()));
         properties.add(buildProperty("plugin.dynamic", "false"));
         properties.add(buildProperty("log.console.level", "info"));
-        properties.add(buildProperty(OGlobalConfiguration.NETWORK_BINARY_MAX_CONTENT_LENGTH.getKey(), "64000"));
 
         serverConfiguration.network = networkConfiguration;
         serverConfiguration.users = users.toArray(new OServerUserConfiguration[users.size()]);
