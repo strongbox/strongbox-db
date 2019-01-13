@@ -5,6 +5,7 @@ import javax.annotation.PreDestroy;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
 import com.orientechnologies.orient.server.config.*;
@@ -78,6 +79,7 @@ public class EmbeddedOrientDbServer
         properties.add(buildProperty("server.database.path", orientDbProperties.getPath()));
         properties.add(buildProperty("plugin.dynamic", "false"));
         properties.add(buildProperty("log.console.level", "info"));
+        properties.add(buildProperty(OGlobalConfiguration.NETWORK_BINARY_MAX_CONTENT_LENGTH.getKey(), "64000"));
 
         serverConfiguration.network = networkConfiguration;
         serverConfiguration.users = users.toArray(new OServerUserConfiguration[users.size()]);
