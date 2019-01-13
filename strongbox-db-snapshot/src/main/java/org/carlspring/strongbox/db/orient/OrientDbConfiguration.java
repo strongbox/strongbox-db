@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OrientDB;
@@ -60,9 +59,7 @@ class OrientDbConfiguration
     {
         OrientDataSource ds = new OrientDataSource(orientDB);
 
-        Properties properties = new Properties();
-        properties.setProperty(OGlobalConfiguration.NETWORK_BINARY_MAX_CONTENT_LENGTH.getKey(), "64000");
-        ds.setInfo(properties);
+        ds.setInfo(new Properties());
 
         // DEV note:
         // NPEx hotfix for OrientDataSource.java:134 :)
