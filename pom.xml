@@ -19,7 +19,7 @@
 
     <modules>
         <module>strongbox-db-liquibase</module>
-        <module>strongbox-db-snapshot</module>
+        <module>strongbox-db-import</module>
     </modules>
 
 </project>
