@@ -18,4 +18,4 @@ To build the code, simply execute:
 ## What's the result of the build process ?
 This project produces the following artifacts:
 * `strongbox-db-liquibase-${version}.jar` : Located in `strongbox-db-liquibase/target`, which contains current database liquibase changesets
-* `strongbox-db-snapshot-${version}-db-snapshot.zip` : Located in `strongbox-db-snapshot/target`, which contains zipped fresh database snapshot built from the above changesets 
+* `strongbox-db-snapshot-${version}.zip` : Located in `strongbox-db-snapshot/target`, which contains zipped fresh database snapshot built from the above changesets 
