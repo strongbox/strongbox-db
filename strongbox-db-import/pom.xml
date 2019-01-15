@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <artifactId>strongbox-db-snapshot</artifactId>
+    <artifactId>strongbox-db-import</artifactId>
 
     <properties>
         <strongbox.orientdb.path>${project.build.directory}/db</strongbox.orientdb.path>
