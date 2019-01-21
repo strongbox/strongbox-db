@@ -21,5 +21,6 @@
     <include file="v1.0.0.15__Authorization_cleanup.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0.16__CronTaskConfiguration_cleanup.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0.17__ArtifactArchiveListing.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0.18__ArtifactGroup.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog> 
