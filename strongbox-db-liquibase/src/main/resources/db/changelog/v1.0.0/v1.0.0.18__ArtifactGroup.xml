@@ -7,12 +7,14 @@
     <changeSet id="v1.0.0.18" author="przemyslaw.fusik@gmail.com">
 
         <o:createClass name="ArtifactGroup" abstract="true">
-            <o:property name="name" type="string" notNull="true"/>
             <o:property name="type" type="string" notNull="true"/>
+            <o:property name="name" type="string" notNull="true"/>
             <o:property name="artifactEntries" type="linkset" linkedType="ArtifactEntry"/>
         </o:createClass>
 
         <o:createClass name="ArtifactIdGroup" extends="ArtifactGroup"/>
+
+        <o:createIndex name="idx_artifact_group" on="ArtifactGroup" property="type name" type="unique" />
 
     </changeSet>
 
