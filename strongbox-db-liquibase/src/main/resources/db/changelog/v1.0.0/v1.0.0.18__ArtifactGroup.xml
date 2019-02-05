@@ -7,7 +7,6 @@
     <changeSet id="v1.0.0.18" author="przemyslaw.fusik@gmail.com">
 
         <o:createClass name="ArtifactGroup" abstract="true">
-            <o:property name="name" type="string" notNull="true"/>
             <o:property name="artifactEntries" type="linkset" linkedType="ArtifactEntry"/>
         </o:createClass>
 
