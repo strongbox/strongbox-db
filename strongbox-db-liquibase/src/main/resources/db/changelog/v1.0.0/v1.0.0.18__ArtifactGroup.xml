@@ -6,17 +6,17 @@
 
     <changeSet id="v1.0.0.18" author="przemyslaw.fusik@gmail.com">
 
-        <o:createClass name="ArtifactGroup" abstract="true">
+        <o:createClass name="ArtifactGroupEntry">
             <o:property name="name" type="string" notNull="true"/>
             <o:property name="artifactEntries" type="linkset" linkedType="ArtifactEntry"/>
         </o:createClass>
 
-        <o:createClass name="RepositoryArtifactIdGroup" extends="ArtifactGroup">
+        <o:createClass name="RepositoryArtifactIdGroupEntry" extends="ArtifactGroupEntry">
             <o:property name="storageId" type="string" notNull="true"/>
             <o:property name="repositoryId" type="string" notNull="true"/>
         </o:createClass>
 
-        <o:createIndex name="idx_repository_artifact_id_group" on="RepositoryArtifactIdGroup" property="storageId repositoryId name" type="unique" />
+        <o:createIndex name="idx_repository_artifact_id_group" on="RepositoryArtifactIdGroupEntry" property="storageId repositoryId name" type="unique" />
 
     </changeSet>
 
