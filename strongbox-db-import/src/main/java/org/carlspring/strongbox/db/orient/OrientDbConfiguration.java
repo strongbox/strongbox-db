@@ -1,53 +1,77 @@
 package org.carlspring.strongbox.db.orient;
 
-import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.util.ReflectionUtils;
+import org.strongbox.db.server.EmbeddedOrientDbServer;
+import org.strongbox.db.server.OrientDbServer;
+import org.strongbox.db.server.OrientDbServerConfiguration;
+import org.strongbox.db.server.OrientDbServerProperties;
+import org.strongbox.db.server.OrientDbStudioConfiguration;
+import org.strongbox.db.server.OrientDbStudioProperties;
 
 import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OrientDB;
 import com.orientechnologies.orient.core.db.OrientDBConfig;
 import com.orientechnologies.orient.jdbc.OrientDataSource;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * @author Przemyslaw Fusik
  */
-@Slf4j
 @Configuration
 class OrientDbConfiguration
 {
+    
+    private static final Logger logger = LoggerFactory.getLogger(OrientDbConfiguration.class);
+    
+    @Bean
+    OrientDbServer orientDbServer(OrientDbServerConfiguration serverProperties, OrientDbStudioConfiguration studioProperties) {
+        return new EmbeddedOrientDbServer(studioProperties, serverProperties);
+    }
 
-    @Autowired
-    private OrientDbProperties orientDbProperties;
+    @Bean
+    @ConfigurationProperties(prefix = "strongbox.orientdb.studio")
+    OrientDbStudioConfiguration orientDbStudioProperties() {
+        return new OrientDbStudioProperties();
+    }
+    
+    @Bean
+    @ConfigurationProperties(prefix = "strongbox.orientdb.server")
+    OrientDbServerConfiguration orientDbServerProperties() {
+        return new OrientDbServerProperties();
+    }
 
     @Bean(destroyMethod = "close")
     @DependsOn("orientDbServer")
-    OrientDB orientDB()
+    OrientDB orientDB(OrientDbServerConfiguration orientDbServerProperties)
     {
-        OrientDB orientDB = new OrientDB(StringUtils.substringBeforeLast(orientDbProperties.getUrl(), "/"),
-                                         orientDbProperties.getUsername(),
-                                         orientDbProperties.getPassword(),
+        OrientDB orientDB = new OrientDB(StringUtils.substringBeforeLast(orientDbServerProperties.getUrl(), "/"),
+                                         orientDbServerProperties.getUsername(),
+                                         orientDbServerProperties.getPassword(),
                                          OrientDBConfig.defaultConfig());
-        String database = orientDbProperties.getDatabase();
+        String database = orientDbServerProperties.getDatabase();
 
         if (!orientDB.exists(database))
         {
-            log.info(String.format("Creating database [%s]...", database));
+            logger.info(String.format("Creating database [%s]...", database));
 
             orientDB.create(database, ODatabaseType.PLOCAL);
         }
         else
         {
-            log.info("Re-using existing database " + database + ".");
+            logger.info("Re-using existing database " + database + ".");
         }
         return orientDB;
     }
@@ -71,12 +95,12 @@ class OrientDbConfiguration
     }
 
     @Bean(destroyMethod = "close")
-    ODatabasePool databasePool(OrientDB orientDB)
+    ODatabasePool databasePool(OrientDB orientDB, OrientDbServerConfiguration orientDbServerProperties)
     {
         return new ODatabasePool(orientDB,
-                                 orientDbProperties.getDatabase(),
-                                 orientDbProperties.getUsername(),
-                                 orientDbProperties.getPassword());
+                                 orientDbServerProperties.getDatabase(),
+                                 orientDbServerProperties.getUsername(),
+                                 orientDbServerProperties.getPassword());
     }
 
 }
