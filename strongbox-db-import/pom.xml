@@ -78,8 +78,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>pre-integration-test</id>
-                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <id>strongbox-export-db</id>
+                        <phase>prepare-package</phase> <!-- bind to the packaging phase -->
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -89,21 +89,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/zip.xml</descriptor>
-                    </descriptors>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>strongbox-db-schema</id>
                         <phase>package</phase> <!-- bind to the packaging phase -->
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/db-schema.xml</descriptor>
+                            </descriptors>
+                        </configuration>                        
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>            
         </plugins>
     </build>
 
