@@ -83,6 +83,9 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <jvmArguments>-Xmx1024m</jvmArguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

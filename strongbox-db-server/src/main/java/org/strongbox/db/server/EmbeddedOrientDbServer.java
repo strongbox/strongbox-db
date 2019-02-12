@@ -184,8 +184,9 @@ public class EmbeddedOrientDbServer
 
         // Don't touch below line. Don't move it down the code. It needs to be
         // called before OServerMain.create()
-        System.setProperty("network.binary.maxLength", "536870912");
-
+        // the size is in Kb
+        System.setProperty("network.binary.maxLength", "524288");
+        
         server = OServerMain.create();
         serverConfiguration = new OServerConfiguration();
 
@@ -223,6 +224,7 @@ public class EmbeddedOrientDbServer
         // add other properties
         List<OServerEntryConfiguration> properties = new LinkedList<>();
         properties.add(buildProperty("server.database.path", serverProperties.getPath()));
+        properties.add(buildProperty("plugin.dynamic", "false"));
         properties.add(buildProperty("log.console.level", "info"));
         properties.add(buildProperty("orientdb.www.path", studioProperties.getPath()));
 
