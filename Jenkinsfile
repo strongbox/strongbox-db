@@ -44,8 +44,9 @@ pipeline {
                 	echo env.VERSION
                 	echo BRANCH_NAME
                 	
-                	echo env.VERSION.contains('PR-${env.CHANGE_ID}')
-                	echo env.VERSION.contains('${BRANCH_NAME}')
+                	echo env.VERSION.contains('PR-${env.CHANGE_ID}').toString()
+                	echo env.VERSION.contains('${BRANCH_NAME}').toString()
+                	echo env.VERSION.contains(BRANCH_NAME).toString()
                 	
                     sh "mvn -U clean install -Dprepare.revision"
                 }
