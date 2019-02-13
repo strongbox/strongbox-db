@@ -46,7 +46,14 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                expression {
+                    (currentBuild.result == null || currentBuild.result == 'SUCCESS') && 
+                    (
+                        BRANCH_NAME == 'master' ||
+                        env.VERSION.contains('PR-${env.CHANGE_ID}') || 
+                        env.VERSION.contains('${BRANCH_NAME}')
+                    )
+                }
             }
             steps {
                 script {
@@ -55,7 +62,8 @@ pipeline {
                         def SERVER_URL = DEPLOY_SERVER_URL;
                         def VERSION_ID = env.VERSION;
 
-                        if (BRANCH_NAME == 'master') {
+                        if (BRANCH_NAME == 'master') 
+                        {
                             echo "Deploying master"
 
                             sh "mvn deploy" +
@@ -68,18 +76,9 @@ pipeline {
 
                             SERVER_URL = PR_SERVER_URL;
 
-                            if(env.CHANGE_ID) {
-                                VERSION_ID = "PR-${env.CHANGE_ID}-${env.VERSION}"
-                            } else {
-                                VERSION_ID = "${BRANCH_NAME}-${env.VERSION}"
-                            }
-
-                            sh "mvn versions:set -DnewVersion=${VERSION_ID}"
-
                             sh "mvn deploy" +
                                " -DskipTests" +
-                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
-                        }
+                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"                        }
                     }
                 }
             }
