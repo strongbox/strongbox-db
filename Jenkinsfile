@@ -43,6 +43,7 @@ pipeline {
                 	echo env.CHANGE_ID
                 	echo env.VERSION
                 	echo BRANCH_NAME
+                	echo "PR-${env.CHANGE_ID}"
                 	
                 	echo env.VERSION.contains('PR-${env.CHANGE_ID}').toString()
                 	echo env.VERSION.contains('${BRANCH_NAME}').toString()
@@ -59,7 +60,7 @@ pipeline {
                     (
                         BRANCH_NAME == 'master' ||
                         env.VERSION.contains('PR-${env.CHANGE_ID}') || 
-                        env.VERSION.contains('${BRANCH_NAME}')
+                        env.VERSION.contains(BRANCH_NAME)
                     )
                 }
             }
