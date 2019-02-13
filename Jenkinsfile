@@ -40,15 +40,6 @@ pipeline {
             steps {
                 withMavenPlus(timestamps: true, mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: '67aaee2b-ca74-4ae1-8eb9-c8f16eb5e534')
                 {
-                	echo env.CHANGE_ID
-                	echo env.VERSION
-                	echo BRANCH_NAME
-                	echo "PR-${env.CHANGE_ID}"
-                	
-                	echo env.VERSION.contains('PR-${env.CHANGE_ID}').toString()
-                	echo env.VERSION.contains('${BRANCH_NAME}').toString()
-                	echo env.VERSION.contains(BRANCH_NAME).toString()
-                	
                     sh "mvn -U clean install -Dprepare.revision"
                 }
             }
@@ -59,7 +50,7 @@ pipeline {
                     (currentBuild.result == null || currentBuild.result == 'SUCCESS') && 
                     (
                         BRANCH_NAME == 'master' ||
-                        env.VERSION.contains('PR-${env.CHANGE_ID}') || 
+                        env.VERSION.contains("PR-${env.CHANGE_ID}") || 
                         env.VERSION.contains(BRANCH_NAME)
                     )
                 }
