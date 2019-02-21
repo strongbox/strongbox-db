@@ -11,9 +11,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
     private String database;
     private String path;
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getUsername()
-     */
     @Override
     public String getUsername()
     {
@@ -25,9 +22,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.username = username;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getPassword()
-     */
     @Override
     public String getPassword()
     {
@@ -39,9 +33,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.password = password;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getProtocol()
-     */
     @Override
     public String getProtocol()
     {
@@ -53,9 +44,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.protocol = protocol;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getHost()
-     */
     @Override
     public String getHost()
     {
@@ -67,9 +55,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.host = host;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getPort()
-     */
     @Override
     public String getPort()
     {
@@ -81,9 +66,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.port = port;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getDatabase()
-     */
     @Override
     public String getDatabase()
     {
@@ -95,9 +77,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.database = database;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getPath()
-     */
     @Override
     public String getPath()
     {
@@ -109,9 +88,6 @@ public class OrientDbServerProperties implements OrientDbServerConfiguration
         this.path = path;
     }
 
-    /* (non-Javadoc)
-     * @see org.strongbox.db.server.OrientDbServerConfiguration#getUrl()
-     */
     @Override
     public String getUrl()
     {
