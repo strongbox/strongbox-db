@@ -35,11 +35,9 @@ pipeline {
                 nodeInfo("mvn")
             }
         }
-        stage('Building')
-        {
+        stage('Building') {
             steps {
-                withMavenPlus(timestamps: true, mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: '67aaee2b-ca74-4ae1-8eb9-c8f16eb5e534')
-                {
+                withMavenPlus(timestamps: true, mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: '67aaee2b-ca74-4ae1-8eb9-c8f16eb5e534') {
                     sh "mvn -U clean install -Dprepare.revision"
                 }
             }
@@ -48,22 +46,18 @@ pipeline {
             when {
                 expression {
                     (currentBuild.result == null || currentBuild.result == 'SUCCESS') && 
-                    (
-                        BRANCH_NAME == 'master' ||
-                        env.VERSION.contains("PR-${env.CHANGE_ID}") || 
-                        env.VERSION.contains(BRANCH_NAME)
-                    )
+                    (BRANCH_NAME == 'master' ||
+                     env.VERSION.contains("PR-${env.CHANGE_ID}") ||
+                     env.VERSION.contains(BRANCH_NAME))
                 }
             }
             steps {
                 script {
-                    withMavenPlus(mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833')
-                    {
+                    withMavenPlus(mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833') {
                         def SERVER_URL = DEPLOY_SERVER_URL;
                         def VERSION_ID = env.VERSION;
 
-                        if (BRANCH_NAME == 'master') 
-                        {
+                        if (BRANCH_NAME == 'master') {
                             echo "Deploying master"
 
                             sh "mvn deploy" +
@@ -78,7 +72,8 @@ pipeline {
 
                             sh "mvn deploy" +
                                " -DskipTests" +
-                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"                        }
+                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
+                        }
                     }
                 }
             }
