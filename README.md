@@ -1,4 +1,6 @@
 # strongbox-db
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fstrongbox%2Fstrongbox-db.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fstrongbox%2Fstrongbox-db?ref=badge_shield)
+
 
 ## The goal of this project
 This project has been created in order speed up the building of the OrientDB database snapshots during the initial [Strongbox](https://github.com/strongbox/strongbox) startup. Before this project was born, it took some time to do all of the database changes from the beginning of time up until the most recent version, so that the OrientDB database structure would be populated properly.
@@ -19,3 +21,7 @@ To build the code, simply execute:
 This project produces the following artifacts:
 * `strongbox-db-liquibase-${version}.jar` : Located in `strongbox-db-liquibase/target`, which contains current database liquibase changesets
 * `strongbox-db-import-${version}.zip` : Located in `strongbox-db-import/target`, which contains zipped fresh database snapshot built from the above changesets
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fstrongbox%2Fstrongbox-db.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fstrongbox%2Fstrongbox-db?ref=badge_large)
