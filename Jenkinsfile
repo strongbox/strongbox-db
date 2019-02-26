@@ -1,12 +1,12 @@
 @Library('jenkins-shared-libraries') _
 
-def SERVER_ID  = 'carlspring-oss-snapshots'
-def DEPLOY_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-snapshots/'
+def SERVER_ID  = 'carlspring'
+def RELEASE_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-releases/'
 def PR_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-pull-requests/'
 
 // Notification settings for "master" and "branch/pr"
 def notifyMaster = [notifyAdmins: true, recipients: [culprits(), requestor()]]
-def notifyBranch = [recipients: [brokenTestsSuspects(), requestor()], notifyByChat: false]
+def notifyBranch = [recipients: [brokenTestsSuspects(), requestor()]]
 
 pipeline {
     agent {
@@ -25,7 +25,7 @@ pipeline {
         VERSION = readMavenPom().getVersion()
     }
     options {
-        timeout(time: 2, unit: 'HOURS')
+        timeout(time: 120, unit: 'MINUTES')
         disableConcurrentBuilds()
     }
     stages {
@@ -46,39 +46,70 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                expression {
+                    (currentBuild.result == null || currentBuild.result == 'SUCCESS') &&
+                    (
+                        BRANCH_NAME == 'master' ||
+                        env.VERSION.contains("PR-${env.CHANGE_ID}") ||
+                        env.VERSION.contains(BRANCH_NAME)
+                    )
+                }
             }
             steps {
                 script {
-                    withMavenPlus(mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833')
-                    {
-                        def SERVER_URL = DEPLOY_SERVER_URL;
-                        def VERSION_ID = env.VERSION;
+                    withMavenPlus(mavenLocalRepo: workspace().getM2LocalRepoPath(), mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833', options: [artifactsPublisher(), mavenLinkerPublisher()], tempBinDir: '') {
+                        def APPROVE_RELEASE=false
+                        def APPROVED_BY=""
 
                         if (BRANCH_NAME == 'master') {
-                            echo "Deploying master"
+                            try {
+                                timeout(time: 115, unit: 'MINUTES')
+                                {
+                                    rocketSend attachments: [[
+                                         authorIcon: 'https://jenkins.carlspring.org/static/fd850815/images/headshot.png',
+                                         authorName: 'Jenkins',
+                                         color: '#f4bc0d',
+                                         text: 'Job is pending release approval! If no action is taken within an hour, it will abort releasing.',
+                                         title: env.JOB_NAME + ' #' + env.BUILD_NUMBER,
+                                         titleLink: env.BUILD_URL
+                                    ]], message: '', rawMessage: true, channel: '#strongbox-devs'
 
-                            sh "mvn deploy" +
-                               " -DskipTests" +
-                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
+                                    APPROVE_RELEASE = input message: 'Do you want to release and deploy this version?',
+                                                            submitter: 'administrators,strongbox,strongbox-pro'
+                                }
+                            }
+                            catch(err)
+                            {
+                                APPROVE_RELEASE = false
+                            }
+
+                            if(APPROVE_RELEASE == true || APPROVE_RELEASE.equals(null))
+                            {
+                                echo "Set upstream branch..."
+                                sh "git branch --set-upstream-to=origin/master master"
+
+                                echo "Preparing release and tag..."
+                                sh "mvn -B release:clean release:prepare"
+
+                                def releaseProperties = readProperties(file: "release.properties");
+                                def RELEASE_VERSION = releaseProperties["scm.tag"]
+
+                                echo "Deploying " + RELEASE_VERSION
+
+                                sh "mvn -B release:perform -DserverId=${SERVER_ID} -DdeployUrl=${RELEASE_SERVER_URL}"
+                            }
+                            else
+                            {
+                                echo "Deployment has been skipped, because it was not approved."
+                            }
                         }
                         else
                         {
                             echo "Deploying branch/PR"
 
-                            SERVER_URL = PR_SERVER_URL;
-
-                            if(env.CHANGE_ID) {
-                                VERSION_ID = "PR-${env.CHANGE_ID}-${env.VERSION}"
-                            } else {
-                                VERSION_ID = "${BRANCH_NAME}-${env.VERSION}"
-                            }
-
-                            sh "mvn versions:set -DnewVersion=${VERSION_ID}"
-
                             sh "mvn deploy" +
                                " -DskipTests" +
-                               " -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
+                               " -DaltDeploymentRepository=${SERVER_ID}::default::${PR_SERVER_URL}"
                         }
                     }
                 }
