@@ -40,6 +40,11 @@
             <artifactId>orientdb-jdbc</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+
         <!-- liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
