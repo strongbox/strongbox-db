@@ -2,21 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
-        <groupId>org.carlspring.strongbox</groupId>
-        <artifactId>strongbox-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    
+
+    <groupId>org.carlspring.strongbox</groupId>
     <artifactId>strongbox-db</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
-    <properties>
-        <serverId />
-        <deployUrl />
-    </properties>
 
     <scm>
         <url>https://github.com/strongbox/strongbox-db</url>
@@ -25,27 +15,8 @@
         <tag>HEAD</tag>
     </scm>
 
-    <dependencies>
-        <!-- logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-    </dependencies>
-
     <modules>
+        <module>strongbox-db-parent</module>
         <module>strongbox-db-liquibase</module>
         <module>strongbox-db-import</module>
         <module>strongbox-db-server</module>
