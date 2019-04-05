@@ -20,6 +20,7 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.graph.server.command.OServerCommandGetGephi;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
@@ -185,7 +186,8 @@ public class EmbeddedOrientDbServer
         // Don't touch below line. Don't move it down the code. It needs to be
         // called before OServerMain.create()
         // the size is in Kb
-        System.setProperty("network.binary.maxLength", "524288");
+        OGlobalConfiguration.NETWORK_BINARY_MAX_CONTENT_LENGTH.setValue(65536);
+
         
         server = OServerMain.create();
         serverConfiguration = new OServerConfiguration();

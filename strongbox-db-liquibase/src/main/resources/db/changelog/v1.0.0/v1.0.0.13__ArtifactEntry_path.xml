@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
 
-    <changeSet id="v1.0.0.13" author="serge.bespalov@gmail.com">
+    <changeSet id="v1.0.0.13" author="strongbox-dev@carlspring.com">
         
         <o:dropIndex name="idx_artifact" tableName="ArtifactEntry" />
         <o:dropProperty propertyName="artifactPath" className="ArtifactEntry"/>
