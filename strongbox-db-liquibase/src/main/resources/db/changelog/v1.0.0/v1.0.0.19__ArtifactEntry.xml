@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:o="http://www.unbroken-dome.org/schema/liquibase-orientdb"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+
+    <changeSet id="v1.0.0.19" author="strongbox-dev@carlspring.com">
+
+        <o:createProperty name="checksums" type="embeddedmap" linkedType="String" className="ArtifactEntry"/>
+
+    </changeSet>
+
+</databaseChangeLog>
+
