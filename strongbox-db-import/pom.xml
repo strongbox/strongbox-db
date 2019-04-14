@@ -7,16 +7,24 @@
 
     <parent>
         <groupId>org.carlspring.strongbox</groupId>
-        <artifactId>strongbox-db</artifactId>
+        <artifactId>strongbox-db-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../strongbox-db-parent</relativePath>
     </parent>
 
     <artifactId>strongbox-db-import</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <properties>
         <strongbox.orientdb.path>${project.build.directory}/db</strongbox.orientdb.path>
     </properties>
+
+    <scm>
+        <url>https://github.com/strongbox/strongbox-db</url>
+        <connection>scm:git:git@github.com:strongbox/strongbox-db.git</connection>
+        <developerConnection>scm:git:git@github.com:strongbox/strongbox-db.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -40,11 +48,6 @@
             <artifactId>orientdb-jdbc</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-
         <!-- liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -64,6 +67,11 @@
         </dependency>
 
         <!-- helpers -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
