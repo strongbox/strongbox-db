@@ -18,6 +18,8 @@
         <deployUrl />
     </properties>
 
+    <inceptionYear>2019</inceptionYear>
+
     <scm>
         <url>https://github.com/strongbox/strongbox-db</url>
         <connection>scm:git:git@github.com:strongbox/strongbox-db.git</connection>

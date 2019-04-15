@@ -14,6 +14,8 @@
 
     <artifactId>strongbox-db-liquibase</artifactId>
 
+    <inceptionYear>2019</inceptionYear>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
