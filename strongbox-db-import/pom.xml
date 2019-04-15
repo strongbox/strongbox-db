@@ -14,6 +14,8 @@
 
     <artifactId>strongbox-db-import</artifactId>
 
+    <inceptionYear>2019</inceptionYear>
+
     <properties>
         <strongbox.orientdb.path>${project.build.directory}/db</strongbox.orientdb.path>
     </properties>
