@@ -130,7 +130,7 @@ public class EmbeddedOrientDbServer
 
         serverConfiguration.network.protocols.add(httpProtocol);
 
-        Path studioPath = Paths.get(studioProperties.getPath()).resolve("studio");
+        Path studioPath = resolvePath(studioProperties.getPath()).resolve("studio");
         if (Files.exists(studioPath))
         {
             logger.info(String.format("OrientDB Studio is already available at [%s], skipping initialization. %n" +
@@ -178,6 +178,11 @@ public class EmbeddedOrientDbServer
         }
     }
 
+    protected Path resolvePath(String path)
+    {
+        return Paths.get(path).toAbsolutePath().normalize();
+    }
+
     private void init()
         throws Exception
     {
@@ -223,12 +228,13 @@ public class EmbeddedOrientDbServer
 
         System.setProperty("ORIENTDB_ROOT_PASSWORD", serverProperties.getPassword());
 
+        String serverDatabasePath = resolvePath(serverProperties.getPath()).toString();
         // add other properties
         List<OServerEntryConfiguration> properties = new LinkedList<>();
-        properties.add(buildProperty("server.database.path", serverProperties.getPath()));
+        properties.add(buildProperty("server.database.path", serverDatabasePath));
         properties.add(buildProperty("plugin.dynamic", "false"));
         properties.add(buildProperty("log.console.level", "info"));
-        properties.add(buildProperty("orientdb.www.path", studioProperties.getPath()));
+        properties.add(buildProperty("orientdb.www.path", serverDatabasePath));
 
         serverConfiguration.network = networkConfiguration;
         serverConfiguration.users = users.toArray(new OServerUserConfiguration[users.size()]);
