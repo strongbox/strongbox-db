@@ -13,6 +13,7 @@
             <o:property name="securityTokenKey" type="string" />
             <o:property name="lastUpdate" type="date" />
             <o:property name="roles" type="embeddedset" linkedType="string"/>
+            <o:property name="source" type="string" />
         </o:createClass>
         
         <o:createIndex name="idx_user_username" on="User" property="username" type="unique" />
