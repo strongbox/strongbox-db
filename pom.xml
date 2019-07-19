@@ -11,7 +11,8 @@
     
     <artifactId>strongbox-db</artifactId>
     <packaging>pom</packaging>
-
+    <version>1.0-PR-15-SNAPSHOT</version>
+    
     <properties>
         <serverId />
         <deployUrl />
