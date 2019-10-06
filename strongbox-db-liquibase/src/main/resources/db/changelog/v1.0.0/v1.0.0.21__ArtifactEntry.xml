@@ -5,16 +5,13 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
 
     <changeSet id="v1.0.0.21" author="strongbox-dev@carlspring.com">
-<!--        <sql>
-            update ArtifactEntry set createdTemp = created.asDatetime();
-            drop property ArtifactEntry.created;
-            update ArtifactEntry remove created;
-            update ArtifactEntry set created = createdTemp;
-            update ArtifactEntry remove createdTemp;
-            create property ArtifactEntry.created datetime;
-        </sql>-->
 
         <o:changePropertyTypeDateToDatetime propertyName="created" className="ArtifactEntry"/>
+
+        <o:changePropertyTypeDateToDatetime propertyName="lastUpdated" className="ArtifactEntry"/>
+
+        <o:changePropertyTypeDateToDatetime propertyName="lastUsed" className="ArtifactEntry"/>
+
     </changeSet>
 
 </databaseChangeLog>
