@@ -6,12 +6,14 @@
 
     <changeSet id="v1.0.0.21" author="strongbox-dev@carlspring.com">
 
-        <o:changePropertyTypeDateToDatetime propertyName="created" className="ArtifactEntry"/>
+        <o:dropProperty className="ArtifactEntry" propertyName="created"/>
+        <o:createProperty className="ArtifactEntry" name="created" type="datetime"/>
 
-        <o:changePropertyTypeDateToDatetime propertyName="lastUpdated" className="ArtifactEntry"/>
+        <o:dropProperty className="ArtifactEntry" propertyName="lastUsed"/>
+        <o:createProperty className="ArtifactEntry" name="lastUsed" type="datetime"/>
 
-        <o:changePropertyTypeDateToDatetime propertyName="lastUsed" className="ArtifactEntry"/>
-
+        <o:dropProperty className="ArtifactEntry" propertyName="lastUpdated"/>
+        <o:createProperty className="ArtifactEntry" name="lastUpdated" type="datetime"/>
     </changeSet>
 
 </databaseChangeLog>
