@@ -25,5 +25,6 @@
     <include file="v1.0.0.19__ArtifactEntry.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0.20__User.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0.21__ArtifactEntry.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0.22__UserEntry.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog> 
