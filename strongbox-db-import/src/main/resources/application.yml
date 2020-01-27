@@ -1,23 +1,6 @@
 spring:
   main:
     web-application-type: NONE
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
 strongbox:
-  orientdb:
-    server:
-      protocol: remote
-      host: 127.0.0.1
-      port: "2025"
-      database: strongbox
-      username: admin
-      password: password
-      path: @strongbox.orientdb.path@
-    studio:
-      ipAddress: 127.0.0.1
-      port: 2480    
-      enabled: true
-      path: @strongbox.orientdb.path@
-logging:
-  level:
-    liquibase: INFO
+  dbimport:
+    root: ./target
