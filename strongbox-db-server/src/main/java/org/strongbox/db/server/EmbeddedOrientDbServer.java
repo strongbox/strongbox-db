@@ -56,8 +56,6 @@ public class EmbeddedOrientDbServer
     public EmbeddedOrientDbServer(OrientDbStudioConfiguration studioProperties,
                                   OrientDbServerConfiguration serverProperties)
     {
-        super();
-        
         this.studioProperties = studioProperties;
         this.serverProperties = serverProperties;
     }
