@@ -1,23 +1,15 @@
 spring:
   main:
     web-application-type: NONE
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
 strongbox:
-  orientdb:
-    server:
-      protocol: remote
-      host: 127.0.0.1
-      port: "2025"
-      database: strongbox
-      username: admin
-      password: password
-      path: @strongbox.orientdb.path@
-    studio:
-      ipAddress: 127.0.0.1
-      port: 2480    
-      enabled: true
-      path: @strongbox.orientdb.path@
+  db:
+    janus-graph:
+      #TODO: [First start] randomize
+      storage-username: cassandra
+      storage-password: cassandra
+      storage-host: 127.0.0.1
+      storage-port: 49142
+      storage-root: ./target/db
 logging:
   level:
     liquibase: INFO
