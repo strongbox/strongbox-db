@@ -45,7 +45,7 @@ public class GremlinTransaction extends AbstractTransaction
         }
     }
 
-    protected void doRollback()
+    protected void doRollback() throws Exception
     {
         if (!transactionManager.canRollback())
         {
@@ -63,8 +63,15 @@ public class GremlinTransaction extends AbstractTransaction
             return;
         }
 
-        nativeTransaction.tx().rollback();
-        nativeTransaction.tx().close();
+        try
+        {
+            nativeTransaction.tx().rollback();
+            nativeTransaction.tx().close();
+        }
+        finally
+        {
+            nativeTransaction.close();
+        }
     }
 
     @Override
@@ -83,7 +90,7 @@ public class GremlinTransaction extends AbstractTransaction
         super.commit();
     }
 
-    protected void doCommit()
+    protected void doCommit() throws Exception
     {
         if (!transactionManager.canCommit())
         {
@@ -99,8 +106,15 @@ public class GremlinTransaction extends AbstractTransaction
 
         logger.debug("Committing native transaction: {}", nativeTransaction);
 
-        nativeTransaction.tx().commit();
-        nativeTransaction.tx().close();
+        try
+        {
+            nativeTransaction.tx().commit();
+            nativeTransaction.tx().close();
+        }
+        finally
+        {
+            nativeTransaction.close();
+        }
     }
 
 }
