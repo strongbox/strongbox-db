@@ -3,8 +3,7 @@ package org.opencypher.gremlin.neo4j.ogm;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
-import org.apache.tinkerpop.gremlin.orientdb.OrientGraphBaseFactory;
+import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.driver.AbstractConfigurableDriver;
 import org.neo4j.ogm.request.Request;
@@ -18,14 +17,14 @@ import org.opencypher.gremlin.neo4j.ogm.transaction.GremlinTransaction;
 /**
  * @author sbespalov
  */
-public class OrientDbGraphDriver extends AbstractConfigurableDriver
+public class GremlinGraphDriver extends AbstractConfigurableDriver
 {
 
-    private final OrientGraphBaseFactory graphFactory;
+    private org.apache.tinkerpop.gremlin.structure.Transaction transactionContext;
 
-    public OrientDbGraphDriver(OrientGraphBaseFactory graph)
+    public GremlinGraphDriver(org.apache.tinkerpop.gremlin.structure.Transaction transactionContext)
     {
-        this.graphFactory = graph;
+        this.transactionContext = transactionContext;
     }
 
     @Override
@@ -48,8 +47,7 @@ public class OrientDbGraphDriver extends AbstractConfigurableDriver
                                           Type type)
     {
         // TODO: Type.READ_ONLY
-        OrientGraph tx = graphFactory.getTx();
-        tx.begin();
+        Graph tx = transactionContext.createThreadedTx();
 
         return new GremlinTransaction(transactionManager, tx, type);
     }
@@ -57,7 +55,7 @@ public class OrientDbGraphDriver extends AbstractConfigurableDriver
     @Override
     public void close()
     {
-
+        transactionContext.close();
     }
 
     @Override
@@ -75,7 +73,7 @@ public class OrientDbGraphDriver extends AbstractConfigurableDriver
     @Override
     protected String getTypeSystemName()
     {
-        return OrientDbGraphDriver.class.getName() + ".types";
+        return GremlinGraphDriver.class.getName() + ".types";
     }
 
 }
