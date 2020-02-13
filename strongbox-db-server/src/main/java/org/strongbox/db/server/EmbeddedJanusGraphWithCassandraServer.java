@@ -1,6 +1,7 @@
 package org.strongbox.db.server;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.PostConstruct;
@@ -44,7 +45,7 @@ public class EmbeddedJanusGraphWithCassandraServer
         try
         {
             provideCassandraInstance();
-            provideGanusGraphInstance();
+            provideJanusGraphInstanceWithRetry();
         }
         catch (Exception e)
         {
@@ -75,7 +76,26 @@ public class EmbeddedJanusGraphWithCassandraServer
         return this.cassandraDaemon = cassandraDaemonLocal;
     }
 
-    private synchronized JanusGraph provideGanusGraphInstance()
+    private synchronized JanusGraph provideJanusGraphInstanceWithRetry()
+        throws Exception
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            try
+            {
+                return provideJanusGraphInstance();
+            }
+            catch (Exception e)
+            {
+                Thread.sleep(500);
+                logger.info(String.format("Retry JanusGraph instance initialization with [%s] attempt...", i));
+            }
+        }
+
+        return provideJanusGraphInstance();
+    }
+
+    private synchronized JanusGraph provideJanusGraphInstance()
         throws Exception
     {
         if (janusGraph != null)
@@ -95,7 +115,17 @@ public class EmbeddedJanusGraphWithCassandraServer
                                                       .set("tx.log-tx", true)
                                                       .open();
 
-        StandardJanusGraph.class.getMethod("removeHook").invoke(janusGraphLocal);
+        try
+        {
+            Method removeHookMethod = StandardJanusGraph.class.getDeclaredMethod("removeHook");
+            removeHookMethod.setAccessible(true);
+            removeHookMethod.invoke(janusGraphLocal);
+        }
+        catch (Exception e)
+        {
+            janusGraphLocal.close();
+            throw e;
+        }
 
         return this.janusGraph = janusGraphLocal;
     }

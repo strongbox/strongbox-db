@@ -2,12 +2,13 @@ package org.carlspring.strongbox.db;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @author Przemyslaw Fusik
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = ValidationAutoConfiguration.class)
 public class Application
 {
 
