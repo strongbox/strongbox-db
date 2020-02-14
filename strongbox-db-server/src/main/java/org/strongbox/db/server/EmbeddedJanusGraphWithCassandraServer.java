@@ -38,6 +38,16 @@ public class EmbeddedJanusGraphWithCassandraServer
         this.cassandraEmbeddedProperties = cassandraEmbeddedProperties;
     }
 
+    public JanusGraph getJanusGraph()
+    {
+        return janusGraph;
+    }
+
+    public CassandraDaemon getCassandraDaemon()
+    {
+        return cassandraDaemon;
+    }
+
     @PostConstruct
     public void start()
         throws Exception

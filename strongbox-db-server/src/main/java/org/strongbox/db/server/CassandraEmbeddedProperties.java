@@ -38,19 +38,19 @@ public class CassandraEmbeddedProperties implements CassandraEmbeddedConfigurati
         configLocal.max_hint_window_in_ms = 10800000; // 3 hours
         configLocal.hinted_handoff_throttle_in_kb = 1024;
         configLocal.max_hints_delivery_threads = 2;
-        configLocal.hints_directory = String.format("%s/.cassandra/hints", storageFolder);
+        configLocal.hints_directory = String.format("%s/cassandra/hints", storageFolder);
         configLocal.authenticator = "PasswordAuthenticator";
         configLocal.authorizer = "AllowAllAuthorizer";
         configLocal.permissions_validity_in_ms = 2000;
         configLocal.partitioner = "org.apache.cassandra.dht.Murmur3Partitioner";
-        configLocal.data_file_directories = new String[] { String.format("%s/.cassandra/data", storageFolder) };
-        configLocal.commitlog_directory = String.format("%s/.cassandra/commitlog", storageFolder);
-        configLocal.cdc_raw_directory = String.format("%s/.cassandra/cdc", storageFolder);
+        configLocal.data_file_directories = new String[] { String.format("%s/cassandra/data", storageFolder) };
+        configLocal.commitlog_directory = String.format("%s/cassandra/commitlog", storageFolder);
+        configLocal.cdc_raw_directory = String.format("%s/cassandra/cdc", storageFolder);
         configLocal.disk_failure_policy = DiskFailurePolicy.stop;
         configLocal.key_cache_save_period = 14400;
         configLocal.row_cache_size_in_mb = 0;
         configLocal.row_cache_save_period = 0;
-        configLocal.saved_caches_directory = String.format("%s/.cassandra/saved_caches", storageFolder);
+        configLocal.saved_caches_directory = String.format("%s/cassandra/saved_caches", storageFolder);
         configLocal.commitlog_sync = CommitLogSync.periodic;
         configLocal.commitlog_sync_period_in_ms = 10000;
         configLocal.commitlog_segment_size_in_mb = 1;
@@ -103,7 +103,7 @@ public class CassandraEmbeddedProperties implements CassandraEmbeddedConfigurati
 
     public String getStorageFolder()
     {
-        return config.data_file_directories[0].replace("/.cassandra/data", "");
+        return config.data_file_directories[0].replace("/cassandra/data", "");
     }
 
     public static class CassandraEmbeddedPropertiesLoader implements ConfigurationLoader

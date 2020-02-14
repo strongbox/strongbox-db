@@ -48,7 +48,6 @@
     </dependencies>
 
     <modules>
-        <module>strongbox-db-liquibase</module>
         <module>strongbox-db-import</module>
         <module>strongbox-db-server</module>
     </modules>

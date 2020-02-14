@@ -1,5 +1,6 @@
-package org.carlspring.strongbox.db.orient;
+package org.carlspring.strongbox.db.server;
 
+import org.janusgraph.core.JanusGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,6 +28,12 @@ class EmbeddedDbServerConfiguration
                                       JanusGraphConfiguration janusGraphConfiguration)
     {
         return new EmbeddedJanusGraphWithCassandraServer(cassandraConfiguration, janusGraphConfiguration);
+    }
+
+    @Bean
+    JanusGraph JanusGraph(EmbeddedDbServer server)
+    {
+        return ((EmbeddedJanusGraphWithCassandraServer) server).getJanusGraph();
     }
 
     @Bean

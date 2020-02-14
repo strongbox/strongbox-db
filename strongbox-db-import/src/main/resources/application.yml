@@ -8,7 +8,7 @@ strongbox:
       storage-password: cassandra
       storage-host: 127.0.0.1
       storage-port: 49142
-      storage-root: ./target
+      storage-root: ./target/db
 logging:
   level:
     liquibase: INFO
