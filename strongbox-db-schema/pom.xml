@@ -12,14 +12,14 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>strongbox-db-liquibase</artifactId>
+    <artifactId>strongbox-db-schema</artifactId>
 
     <inceptionYear>2019</inceptionYear>
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-core</artifactId>
         </dependency>
     </dependencies>
 </project>

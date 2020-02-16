@@ -48,6 +48,7 @@
     </dependencies>
 
     <modules>
+        <module>strongbox-db-schema</module>
         <module>strongbox-db-import</module>
         <module>strongbox-db-server</module>
     </modules>

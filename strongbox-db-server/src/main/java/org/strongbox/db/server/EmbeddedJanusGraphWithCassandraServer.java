@@ -49,7 +49,7 @@ public class EmbeddedJanusGraphWithCassandraServer
     }
 
     @PostConstruct
-    public void start()
+    public synchronized void start()
         throws Exception
     {
         try
@@ -64,7 +64,7 @@ public class EmbeddedJanusGraphWithCassandraServer
         }
     }
 
-    private synchronized CassandraDaemon provideCassandraInstance()
+    private CassandraDaemon provideCassandraInstance()
     {
         if (cassandraDaemon != null)
         {
@@ -86,7 +86,7 @@ public class EmbeddedJanusGraphWithCassandraServer
         return this.cassandraDaemon = cassandraDaemonLocal;
     }
 
-    private synchronized JanusGraph provideJanusGraphInstanceWithRetry()
+    private JanusGraph provideJanusGraphInstanceWithRetry()
         throws Exception
     {
         for (int i = 0; i < 20; i++)
@@ -105,7 +105,7 @@ public class EmbeddedJanusGraphWithCassandraServer
         return provideJanusGraphInstance();
     }
 
-    private synchronized JanusGraph provideJanusGraphInstance()
+    private JanusGraph provideJanusGraphInstance()
         throws Exception
     {
         if (janusGraph != null)
@@ -185,7 +185,14 @@ public class EmbeddedJanusGraphWithCassandraServer
         {
             logger.error("Failed to drain cassandra service.", e);
         }
-        cassandraDaemon.deactivate();
+        try
+        {
+            cassandraDaemon.deactivate();
+        }
+        finally
+        {
+            cassandraDaemon = null;
+        }
     }
 
     private void closeJanusGraph()
@@ -196,7 +203,14 @@ public class EmbeddedJanusGraphWithCassandraServer
             return;
         }
         logger.info("Shutting JanusGraph instance..");
-        janusGraph.close();
+        try
+        {
+            janusGraph.close();
+        }
+        finally
+        {
+            janusGraph = null;
+        }
     }
 
 }
