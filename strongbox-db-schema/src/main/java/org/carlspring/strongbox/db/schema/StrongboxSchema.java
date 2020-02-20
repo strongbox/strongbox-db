@@ -1,9 +1,23 @@
 package org.carlspring.strongbox.db.schema;
 
+import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
+import static org.carlspring.strongbox.db.schema.Edges.REMOTE_ARTIFACT_INHERIT_ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Edges.REPOSITORY_ARTIFACT_ID_GROUP_INHERIT_ARTIFACT_GROUP;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_GROUP;
+import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
+import static org.carlspring.strongbox.db.schema.Vertices.GENERIC_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Vertices.REPOSITORY_ARTIFACT_ID_GROUP;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
+import static org.janusgraph.core.Multiplicity.MULTI;
+import static org.janusgraph.core.Multiplicity.ONE2MANY;
+import static org.janusgraph.core.Multiplicity.ONE2ONE;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -116,18 +130,42 @@ public class StrongboxSchema
                               jgm.getVertexLabel(ARTIFACT),
                               true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
-
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(REMOTE_ARTIFACT),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_COORDINATES),
                               true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
-
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(ARTIFACT_COORDINATES),
+                              jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("path")).ifPresent(result::add);
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(ARTIFACT_TAG),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(ARTIFACT_GROUP),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(REPOSITORY_ARTIFACT_ID_GROUP),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        
         // TODO: Artifact index by storageId+repositoryId+path
         // buildIndexIfNecessary(jgm,
         // Edge.class,
@@ -146,14 +184,25 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "path", String.class);
 
         // Vertices
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
+        makeVertexLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT);
+        makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, RAW_ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
+        makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_GROUP);
+        makeVertexLabelIfDoesNotExist(jgm, REPOSITORY_ARTIFACT_ID_GROUP);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_TAGS, MULTI);
+        makeEdgeLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT_INHERIT_ARTIFACT, ONE2ONE);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES, ONE2ONE);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
+        makeEdgeLabelIfDoesNotExist(jgm, REPOSITORY_ARTIFACT_ID_GROUP_INHERIT_ARTIFACT_GROUP, ONE2ONE);
+        
     }
 
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
