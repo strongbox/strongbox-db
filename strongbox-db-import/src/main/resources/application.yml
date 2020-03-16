@@ -4,6 +4,7 @@ spring:
 strongbox:
   db:
     janus-graph:
+      #TODO: [First start] randomize
       storage-username: cassandra
       storage-password: cassandra
       storage-host: 127.0.0.1

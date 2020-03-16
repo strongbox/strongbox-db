@@ -1,9 +1,19 @@
 package org.opencypher.gremlin.neo4j.driver;
 
+import static org.opencypher.gremlin.translation.ReturnProperties.ID;
+import static org.opencypher.gremlin.translation.ReturnProperties.INV;
+import static org.opencypher.gremlin.translation.ReturnProperties.LABEL;
+import static org.opencypher.gremlin.translation.ReturnProperties.OUTV;
+import static org.opencypher.gremlin.translation.ReturnProperties.RELATIONSHIP_TYPE;
+import static org.opencypher.gremlin.translation.ReturnProperties.TYPE;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
+import org.janusgraph.core.JanusGraphTransaction;
+import org.janusgraph.core.JanusGraphVertex;
+import org.janusgraph.graphdb.relations.RelationIdentifier;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.Statement;
@@ -88,34 +98,28 @@ public class CypherGremlinStatementRunner implements StatementRunner
                 Map<String, Object> nodeMap = (Map<String, Object>) value;
                 nodeMap.entrySet().forEach(this::normalizeValue);
             }
-            throw new IllegalArgumentException(
-                    Optional.ofNullable(e.getValue()).map(v -> v.getClass()).map(c -> c.toString()).orElse("null"));
-            // else if (e.getValue() instanceof RelationIdentifier)
-            // {
-            // JanusGraphTransaction tx = (JanusGraphTransaction)
-            // gremlinTransaction.getNativeTransaction();
-            // RelationIdentifier relationIdentifier = (RelationIdentifier)
-            // e.getValue();
-            // if (ID.equals(e.getKey()))
-            // {
-            // e.setValue(relationIdentifier.getRelationId());
-            //
-            // return;
-            // }
-            //
-            // Map<String, Object> expectedValue = new HashMap<>();
-            // expectedValue.put(TYPE, RELATIONSHIP_TYPE);
-            // expectedValue.put(ID, relationIdentifier.getRelationId());
-            // expectedValue.put(OUTV, relationIdentifier.getOutVertexId());
-            // expectedValue.put(INV, relationIdentifier.getInVertexId());
-            //
-            // JanusGraphVertex typeVertex =
-            // tx.getVertex(relationIdentifier.getTypeId());
-            // expectedValue.put(LABEL, typeVertex.label());
-            //
-            // e.setValue(expectedValue);
-            // }
+            else if (e.getValue() instanceof RelationIdentifier)
+            {
+                JanusGraphTransaction tx = (JanusGraphTransaction) gremlinTransaction.getNativeTransaction();
+                RelationIdentifier relationIdentifier = (RelationIdentifier) e.getValue();
+                if (ID.equals(e.getKey()))
+                {
+                    e.setValue(relationIdentifier.getRelationId());
 
+                    return;
+                }
+
+                Map<String, Object> expectedValue = new HashMap<>();
+                expectedValue.put(TYPE, RELATIONSHIP_TYPE);
+                expectedValue.put(ID, relationIdentifier.getRelationId());
+                expectedValue.put(OUTV, relationIdentifier.getOutVertexId());
+                expectedValue.put(INV, relationIdentifier.getInVertexId());
+
+                JanusGraphVertex typeVertex = tx.getVertex(relationIdentifier.getTypeId());
+                expectedValue.put(LABEL, typeVertex.label());
+
+                e.setValue(expectedValue);
+            }
         }
 
     }

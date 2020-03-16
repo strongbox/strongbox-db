@@ -13,7 +13,7 @@ import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
 import static org.carlspring.strongbox.db.schema.Vertices.GENERIC_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
-import static org.carlspring.strongbox.db.schema.Vertices.REPOSITORY_ARTIFACT_ID_GROUP;
+import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
 import static org.janusgraph.core.Multiplicity.ONE2MANY;
@@ -162,7 +162,7 @@ public class StrongboxSchema
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(REPOSITORY_ARTIFACT_ID_GROUP),
+                              jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
         
@@ -184,6 +184,8 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
+        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
 
         // Vertices
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
@@ -193,7 +195,7 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, RAW_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_GROUP);
-        makeVertexLabelIfDoesNotExist(jgm, REPOSITORY_ARTIFACT_ID_GROUP);
+        makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);

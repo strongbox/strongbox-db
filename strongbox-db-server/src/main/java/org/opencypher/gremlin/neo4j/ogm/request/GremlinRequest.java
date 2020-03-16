@@ -127,7 +127,7 @@ public class GremlinRequest implements Request
     {
         Map<String, Object> parameterMap = query.getParameters();
         String cypherStatement = query.getStatement();
-        logger.debug("Cypher: {} with params {}", cypherStatement, parameterMap);
+        logger.info("Cypher: {} with params {}", cypherStatement, parameterMap);
 
         Pair<String, Map<String, Object>> cypherWithParams = Pair.of(cypherStatement, parameterMap);
         cypherStatement = Optional.of(cypherWithParams)
@@ -137,14 +137,14 @@ public class GremlinRequest implements Request
                                   .map(Pair::getLeft)
                                   .get();
         
-        logger.debug("Cypher(normalized): {}", cypherStatement);
+        logger.info("Cypher(normalized): {}", cypherStatement);
         
         CypherAst ast = CypherAst.parse(cypherStatement, parameterMap);
         Translator<String, GroovyPredicate> translator = Translator.builder()
                                                                    .gremlinGroovy()
                                                                    .enableCypherExtensions()
                                                                    .build();
-        logger.debug("Gremlin: {}", ast.buildTranslation(translator));
+        logger.info("Gremlin: {}", ast.buildTranslation(translator));
 
         return statementRunner.run(cypherStatement, parameterMap);
     }
