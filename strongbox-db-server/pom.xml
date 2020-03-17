@@ -33,6 +33,10 @@
             <artifactId>janusgraph-cql</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-inmemory</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.cassandra</groupId>
             <artifactId>cassandra-all</artifactId>
         </dependency>
