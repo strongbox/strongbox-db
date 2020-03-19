@@ -7,9 +7,11 @@ import static org.opencypher.gremlin.translation.ReturnProperties.OUTV;
 import static org.opencypher.gremlin.translation.ReturnProperties.RELATIONSHIP_TYPE;
 import static org.opencypher.gremlin.translation.ReturnProperties.TYPE;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletionStage;
 
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.JanusGraphVertex;
@@ -18,11 +20,13 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.Statement;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.StatementResultCursor;
 import org.neo4j.driver.v1.StatementRunner;
 import org.neo4j.driver.v1.Value;
 import org.neo4j.driver.v1.types.TypeSystem;
 import org.opencypher.gremlin.client.CypherGremlinClient;
 import org.opencypher.gremlin.neo4j.ogm.transaction.GremlinTransaction;
+import org.strongbox.util.Commons;
 
 /**
  * @author sbespalov
@@ -120,8 +124,45 @@ public class CypherGremlinStatementRunner implements StatementRunner
 
                 e.setValue(expectedValue);
             }
+            else if (value instanceof Date)
+            {
+                e.setValue(Commons.toLocalDateTime((Date) value));
+            }
         }
 
+    }
+
+    @Override
+    public CompletionStage<StatementResultCursor> runAsync(String statementTemplate,
+                                                           Value parameters)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompletionStage<StatementResultCursor> runAsync(String statementTemplate,
+                                                           Map<String, Object> statementParameters)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompletionStage<StatementResultCursor> runAsync(String statementTemplate,
+                                                           Record statementParameters)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompletionStage<StatementResultCursor> runAsync(String statementTemplate)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompletionStage<StatementResultCursor> runAsync(Statement statement)
+    {
+        throw new UnsupportedOperationException();
     }
 
 }
