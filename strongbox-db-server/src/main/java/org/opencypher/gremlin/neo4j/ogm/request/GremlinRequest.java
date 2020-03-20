@@ -1,9 +1,14 @@
 package org.opencypher.gremlin.neo4j.ogm.request;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -108,7 +113,8 @@ public class GremlinRequest implements Request
     @Override
     public Response<GraphRowListModel> execute(GraphRowListModelRequest query)
     {
-        if (query.getStatement().length() == 0) {
+        if (query.getStatement().length() == 0)
+        {
             return new EmptyResponse();
         }
         return new GremlinGraphRowModelResponse(executeRequest(query), entityAdapter);
@@ -117,7 +123,8 @@ public class GremlinRequest implements Request
     @Override
     public Response<RestModel> execute(RestModelRequest query)
     {
-        if (query.getStatement().length() == 0) {
+        if (query.getStatement().length() == 0)
+        {
             return new EmptyResponse();
         }
         return new GremlinRestModelResponse(executeRequest(query), entityAdapter);
@@ -136,9 +143,9 @@ public class GremlinRequest implements Request
                                   .map(this::normalizeMatchByIdWithRelationResult)
                                   .map(Pair::getLeft)
                                   .get();
-        
+
         logger.info("Cypher(normalized): {}", cypherStatement);
-        
+
         CypherAst ast = CypherAst.parse(cypherStatement, parameterMap);
         Translator<String, GroovyPredicate> translator = Translator.builder()
                                                                    .gremlinGroovy()
@@ -146,6 +153,27 @@ public class GremlinRequest implements Request
                                                                    .build();
         logger.info("Gremlin: {}", ast.buildTranslation(translator));
 
+        Class<?> pageableClass;
+        try
+        {
+            pageableClass = Class.forName("org.springframework.data.domain.Pageable");
+        }
+        catch (ClassNotFoundException e)
+        {
+            pageableClass = null;
+        }
+        if (pageableClass != null)
+        {
+            for (Iterator<Entry<String, Object>> iterator = parameterMap.entrySet().iterator(); iterator.hasNext();)
+            {
+                Entry<String, Object> next = iterator.next();
+                if (pageableClass.isInstance(next.getValue()))
+                {
+                    iterator.remove();
+                }
+            }
+        }
+        
         return statementRunner.run(cypherStatement, parameterMap);
     }
 
@@ -186,7 +214,7 @@ public class GremlinRequest implements Request
                        .map(s -> Pair.of(s, cyphterWithParams.getRight()))
                        .orElse(cyphterWithParams);
     }
-    
+
     private static class MultiStatementBasedResponse implements Response<RowModel>
     {
         // This implementation is not good, but it preserved the current

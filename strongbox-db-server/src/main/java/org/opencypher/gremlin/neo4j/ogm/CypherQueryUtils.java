@@ -1,5 +1,9 @@
 package org.opencypher.gremlin.neo4j.ogm;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,22 +57,25 @@ public class CypherQueryUtils
         for (Pair<String, Object> p : props)
         {
             cypherStatement = cypherStatement.replace(String.format(placeholderFormat, p.getKey()),
-                                                      inlinedValue(p.getValue()));
+                                                      inlinedValue(p.getKey(), p.getValue()));
         }
 
         return cypherStatement;
     }
 
-    private static String inlinedValue(Object value)
+    private static String inlinedValue(String key, Object value)
     {
         if (value instanceof Number)
         {
             return value.toString();
         }
-
-        if (value == null)
+        else if (value instanceof LocalDateTime)
         {
-            throw new IllegalArgumentException("Null values not supported.");
+            return String.valueOf(((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        }
+        else if (value == null)
+        {
+            return "null";
         }
 
         return "'" + value.toString() + "'";
