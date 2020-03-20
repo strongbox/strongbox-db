@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.strongbox.util.Commons;
 
 public class CypherQueryUtils
 {
@@ -71,7 +72,7 @@ public class CypherQueryUtils
         }
         else if (value instanceof LocalDateTime)
         {
-            return String.valueOf(((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            return String.valueOf(Commons.toLong((LocalDateTime) value));
         }
         else if (value == null)
         {

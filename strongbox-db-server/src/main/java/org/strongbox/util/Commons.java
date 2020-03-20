@@ -1,5 +1,6 @@
 package org.strongbox.util;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -25,6 +26,24 @@ public class Commons
             return null;
         }
         return Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
+    }
+    
+    public static LocalDateTime toLocalDateTime(Long value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+        return Instant.ofEpochMilli(value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    public static Long toLong(LocalDateTime date)
+    {
+        if (date == null)
+        {
+            return null;
+        }
+        return date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
     
 }
