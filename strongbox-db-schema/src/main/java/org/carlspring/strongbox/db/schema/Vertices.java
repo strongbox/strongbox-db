@@ -16,10 +16,7 @@ public interface Vertices
     String RPM_ARTIFACT_COORDINATES = "RpmArtifactCoordinates";
     
     String ARTIFACT_TAG = "ArtifactTag";
-    String ARTIFACT_GROUP = "ArtifactGroup";
     String ARTIFACT_ID_GROUP = "ArtifactIdGroup";
-    
-    
     
     String USER = "User";
 }
