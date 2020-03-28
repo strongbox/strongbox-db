@@ -11,6 +11,10 @@ import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
 import static org.carlspring.strongbox.db.schema.Vertices.GENERIC_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.MAVEN_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.NPM_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
@@ -150,6 +154,26 @@ public class StrongboxSchema
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
+                              jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_TAG),
                               true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
@@ -158,6 +182,20 @@ public class StrongboxSchema
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
+
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(ARTIFACT_ID_GROUP),
+                              false,
+                              jgm.getPropertyKey("storageId"),
+                              jgm.getPropertyKey("repositoryId")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(ARTIFACT_ID_GROUP),
+                              true,
+                              jgm.getPropertyKey("storageId"),
+                              jgm.getPropertyKey("repositoryId"),
+                              jgm.getPropertyKey("name")).ifPresent(result::add);
         
         // TODO: Artifact index by storageId+repositoryId+path
         // buildIndexIfNecessary(jgm,
@@ -177,6 +215,7 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
+        makePropertyKeyIfDoesNotExist(jgm, "name", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
         makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
 
@@ -186,6 +225,10 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, RAW_ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, MAVEN_ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, NPM_ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, NUGET_ARTIFACT_COORDINATES);
+        makeVertexLabelIfDoesNotExist(jgm, PYPI_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
 
