@@ -144,7 +144,7 @@ public class GremlinRequest implements Request
                                   .map(Pair::getLeft)
                                   .get();
 
-        logger.info("Cypher(normalized): {}", cypherStatement);
+        logger.trace("Cypher(normalized): {}", cypherStatement);
 
         CypherAst ast = CypherAst.parse(cypherStatement, parameterMap);
         Translator<String, GroovyPredicate> translator = Translator.builder()
