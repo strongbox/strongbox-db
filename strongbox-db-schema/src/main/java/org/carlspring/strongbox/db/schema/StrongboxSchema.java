@@ -34,7 +34,9 @@ import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.Multiplicity;
 import org.janusgraph.core.PropertyKey;
+import org.janusgraph.core.schema.ConsistencyModifier;
 import org.janusgraph.core.schema.EdgeLabelMaker;
+import org.janusgraph.core.schema.JanusGraphIndex;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder;
 import org.janusgraph.core.schema.JanusGraphSchemaType;
@@ -176,6 +178,7 @@ public class StrongboxSchema
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_TAG),
                               true,
+                              true,
                               jgm.getPropertyKey("uuid")).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
@@ -212,12 +215,7 @@ public class StrongboxSchema
     private void applySchemaChanges(JanusGraphManagement jgm)
     {
         // Properties
-        makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "name", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
-        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
+        createProperties(jgm);
 
         // Vertices
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
@@ -241,10 +239,76 @@ public class StrongboxSchema
         
     }
 
+    private void createProperties(JanusGraphManagement jgm)
+    {
+        makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class).ifPresent(p -> jgm.setConsistency(p, ConsistencyModifier.LOCK));
+        makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
+        makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
+        makePropertyKeyIfDoesNotExist(jgm, "name", String.class);
+        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
+        
+        //Artifact
+        makePropertyKeyIfDoesNotExist(jgm, "sizeInBytes", Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "lastUpdated", Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "lastUsed", Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "created", Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "downloadCount", Integer.class, Cardinality.SINGLE);
+        
+        //RemoteArtifact
+        makePropertyKeyIfDoesNotExist(jgm, "cached", String.class, Cardinality.SINGLE);
+
+        //Common coordinates
+        makePropertyKeyIfDoesNotExist(jgm, "version", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.extension", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.name", String.class, Cardinality.SINGLE);
+        
+        //Maven
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.groupId", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.artifactId", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.classifier", String.class, Cardinality.SINGLE);
+        
+        //Npm
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.scope", String.class, Cardinality.SINGLE);
+        
+        //Nuget
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.id", String.class, Cardinality.SINGLE);
+        
+        //P2
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.filename", String.class, Cardinality.SINGLE);
+        
+        //Pypi
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.build", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.languageImplementationVersion", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.abi", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.platform", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.packaging", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.distribution", String.class, Cardinality.SINGLE);
+        
+        //Raw
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.path", String.class, Cardinality.SINGLE);
+        
+        //Rpm
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.base_name", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.release", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.architecture", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "coordinates.package_type", String.class, Cardinality.SINGLE);
+
+    }
+
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
                                                    final Class<? extends Element> elementType,
                                                    final JanusGraphSchemaType schemaType,
                                                    final boolean unique,
+                                                   final PropertyKey... properties){
+        return buildIndexIfNecessary(jgm, elementType, schemaType, unique, true, properties);
+    }
+    
+    private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
+                                                   final Class<? extends Element> elementType,
+                                                   final JanusGraphSchemaType schemaType,
+                                                   final boolean unique,
+                                                   final boolean consistent,
                                                    final PropertyKey... properties)
     {
         final String name = schemaType.name() + "By"
@@ -267,8 +331,13 @@ public class StrongboxSchema
         {
             indexBuilder = indexBuilder.unique();
         }
+        JanusGraphIndex intex = indexBuilder.buildCompositeIndex();
+        if (consistent)
+        {
+            jgm.setConsistency(intex, ConsistencyModifier.LOCK);
+        }
 
-        return Optional.of(indexBuilder.buildCompositeIndex().name());
+        return Optional.of(intex.name());
     }
 
     private void makeEdgeLabelIfDoesNotExist(final JanusGraphManagement jgm,
@@ -298,21 +367,21 @@ public class StrongboxSchema
         jgm.makeVertexLabel(name).make();
     }
 
-    private void makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
+    private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
                                                final String name,
                                                final Class<?> dataType)
     {
-        makePropertyKeyIfDoesNotExist(jgm, name, dataType, null);
+        return makePropertyKeyIfDoesNotExist(jgm, name, dataType, null);
     }
 
-    private void makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
+    private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
                                                final String name,
                                                final Class<?> dataType,
                                                final Cardinality cardinality)
     {
         if (jgm.containsPropertyKey(name))
         {
-            return;
+            return Optional.empty();
         }
 
         PropertyKeyMaker propertyKeyMaker = jgm.makePropertyKey(name).dataType(dataType);
@@ -320,8 +389,7 @@ public class StrongboxSchema
         {
             propertyKeyMaker = propertyKeyMaker.cardinality(cardinality);
         }
-        propertyKeyMaker.make();
-
+        return Optional.of(propertyKeyMaker.make());
     }
 
 }
