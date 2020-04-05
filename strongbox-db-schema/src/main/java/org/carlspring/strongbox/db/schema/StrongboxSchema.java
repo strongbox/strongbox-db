@@ -256,7 +256,7 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "downloadCount", Integer.class, Cardinality.SINGLE);
         
         //RemoteArtifact
-        makePropertyKeyIfDoesNotExist(jgm, "cached", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "cached", Boolean.class, Cardinality.SINGLE);
 
         //Common coordinates
         makePropertyKeyIfDoesNotExist(jgm, "version", String.class, Cardinality.SINGLE);
