@@ -16,6 +16,7 @@ import static org.carlspring.strongbox.db.schema.Vertices.NPM_ARTIFACT_COORDINAT
 import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Vertices.USER;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
 import static org.janusgraph.core.Multiplicity.ONE2MANY;
@@ -190,6 +191,7 @@ public class StrongboxSchema
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               false,
+                              false,
                               jgm.getPropertyKey("storageId"),
                               jgm.getPropertyKey("repositoryId")).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
@@ -199,15 +201,11 @@ public class StrongboxSchema
                               jgm.getPropertyKey("storageId"),
                               jgm.getPropertyKey("repositoryId"),
                               jgm.getPropertyKey("name")).ifPresent(result::add);
-        
-        // TODO: Artifact index by storageId+repositoryId+path
-        // buildIndexIfNecessary(jgm,
-        // Edge.class,
-        // jgm.getEdgeLabel(ARTIFACT_HAS_ARTIFACT_COORDINATES),
-        // true,
-        // jgm.getPropertyKey("storageId"),
-        // jgm.getPropertyKey("repositoryId"),
-        // jgm.getPropertyKey("path")).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(USER),
+                              true,
+                              jgm.getPropertyKey("uuid")).ifPresent(result::add);        
 
         return result;
     }
@@ -229,6 +227,7 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, PYPI_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
+        makeVertexLabelIfDoesNotExist(jgm, USER);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
@@ -245,15 +244,15 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
         makePropertyKeyIfDoesNotExist(jgm, "name", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
-        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, "lastUpdated", Long.class, Cardinality.SINGLE);
         
         //Artifact
         makePropertyKeyIfDoesNotExist(jgm, "sizeInBytes", Long.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "lastUpdated", Long.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, "lastUsed", Long.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, "created", Long.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, "downloadCount", Integer.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
         
         //RemoteArtifact
         makePropertyKeyIfDoesNotExist(jgm, "cached", Boolean.class, Cardinality.SINGLE);
@@ -293,7 +292,14 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, "coordinates.release", String.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, "coordinates.architecture", String.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, "coordinates.package_type", String.class, Cardinality.SINGLE);
-
+        
+        //User
+        makePropertyKeyIfDoesNotExist(jgm, "username", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "password", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "enabled", Boolean.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "roles", String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, "securityTokenKey", String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, "sourceId", String.class, Cardinality.SINGLE);
     }
 
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
