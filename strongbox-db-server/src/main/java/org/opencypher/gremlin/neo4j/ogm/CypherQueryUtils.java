@@ -74,6 +74,9 @@ public class CypherQueryUtils
         {
             return String.valueOf(Commons.toLong((LocalDateTime) value));
         }
+        else if (value instanceof Collection) {
+            return "[" + ((Collection)value).stream().map(e-> inlinedValue(key, e)).collect(Collectors.joining(",")) + "]";
+        }
         else if (value == null)
         {
             return "null";
