@@ -145,13 +145,15 @@ public class GremlinRequest implements Request
                                   .get();
 
         logger.trace("Cypher(normalized): {}", cypherStatement);
-
-        CypherAst ast = CypherAst.parse(cypherStatement, parameterMap);
-        Translator<String, GroovyPredicate> translator = Translator.builder()
-                                                                   .gremlinGroovy()
-                                                                   .enableCypherExtensions()
-                                                                   .build();
-        logger.info("Gremlin: {}", ast.buildTranslation(translator));
+        if (logger.isTraceEnabled())
+        {
+            CypherAst ast = CypherAst.parse(cypherStatement, parameterMap);
+            Translator<String, GroovyPredicate> translator = Translator.builder()
+                                                                       .gremlinGroovy()
+                                                                       .enableCypherExtensions()
+                                                                       .build();
+            logger.trace("Gremlin: {}", ast.buildTranslation(translator));
+        }
 
         Class<?> pageableClass;
         try
