@@ -134,7 +134,7 @@ public class GremlinRequest implements Request
     {
         Map<String, Object> parameterMap = query.getParameters();
         String cypherStatement = query.getStatement();
-        logger.info("Cypher: {} with params {}", cypherStatement, parameterMap);
+        logger.debug("Cypher: {} with params {}", cypherStatement, parameterMap);
 
         Pair<String, Map<String, Object>> cypherWithParams = Pair.of(cypherStatement, parameterMap);
         cypherStatement = Optional.of(cypherWithParams)
