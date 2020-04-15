@@ -53,7 +53,7 @@ public class CassandraEmbeddedProperties implements CassandraEmbeddedConfigurati
         configLocal.saved_caches_directory = String.format("%s/cassandra/saved_caches", storageFolder);
         configLocal.commitlog_sync = CommitLogSync.periodic;
         configLocal.commitlog_sync_period_in_ms = 10000;
-        configLocal.commitlog_segment_size_in_mb = 1;
+        configLocal.commitlog_segment_size_in_mb = 8;
         configLocal.seed_provider = new ParameterizedClass("org.apache.cassandra.locator.SimpleSeedProvider",
                 Collections.singletonMap("seeds", "127.0.0.1"));
         configLocal.concurrent_reads = 32;
