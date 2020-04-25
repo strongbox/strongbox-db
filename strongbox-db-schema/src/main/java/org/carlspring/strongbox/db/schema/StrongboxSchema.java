@@ -143,8 +143,7 @@ public class StrongboxSchema
         try
         {
             logger.info(String.format("Schema: %n%s", jgm.printSchema()));
-        }
-        finally
+        } finally
         {
             jgm.rollback();
         }
@@ -243,7 +242,7 @@ public class StrongboxSchema
                               Vertex.class,
                               jgm.getVertexLabel(USER),
                               true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);     
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
         return result;
     }
@@ -520,10 +519,11 @@ public class StrongboxSchema
                                                    final Class<? extends Element> elementType,
                                                    final JanusGraphSchemaType schemaType,
                                                    final boolean unique,
-                                                   final PropertyKey... properties){
+                                                   final PropertyKey... properties)
+    {
         return buildIndexIfNecessary(jgm, elementType, schemaType, unique, true, properties);
     }
-    
+
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
                                                    final Class<? extends Element> elementType,
                                                    final JanusGraphSchemaType schemaType,
@@ -588,16 +588,16 @@ public class StrongboxSchema
     }
 
     private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
-                                               final String name,
-                                               final Class<?> dataType)
+                                                                final String name,
+                                                                final Class<?> dataType)
     {
         return makePropertyKeyIfDoesNotExist(jgm, name, dataType, null);
     }
 
     private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
-                                               final String name,
-                                               final Class<?> dataType,
-                                               final Cardinality cardinality)
+                                                                final String name,
+                                                                final Class<?> dataType,
+                                                                final Cardinality cardinality)
     {
         if (jgm.containsPropertyKey(name))
         {
