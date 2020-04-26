@@ -35,6 +35,7 @@ import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.Multiplicity;
 import org.janusgraph.core.PropertyKey;
+import org.janusgraph.core.VertexLabel;
 import org.janusgraph.core.schema.ConsistencyModifier;
 import org.janusgraph.core.schema.EdgeLabelMaker;
 import org.janusgraph.core.schema.JanusGraphIndex;
@@ -235,7 +236,58 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT_INHERIT_ARTIFACT, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
-        
+
+        // Add property constraints
+        applyPropertyConstraints(jgm);
+
+    }
+
+    private void applyPropertyConstraints(JanusGraphManagement jgm)
+    {
+        // Vertex Property Constraints
+        addVertexPropertyConstraints(jgm, ARTIFACT, "uuid", "storageId", "repositoryId", "created", "lastUpdated",
+                                     "lastUsed", "sizeInBytes", "downloadCount", "filenames", "checksums");
+
+        addVertexPropertyConstraints(jgm, REMOTE_ARTIFACT, "uuid", "cached");
+
+        addVertexPropertyConstraints(jgm, GENERIC_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name");
+
+        addVertexPropertyConstraints(jgm, RAW_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name", "coordinates.path");
+
+        addVertexPropertyConstraints(jgm, MAVEN_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name", "coordinates.groupId", "coordinates.artifactId",
+                                     "coordinates.classifier");
+
+        addVertexPropertyConstraints(jgm, NPM_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name", "coordinates.scope");
+
+        addVertexPropertyConstraints(jgm, NUGET_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name", "coordinates.id");
+
+        addVertexPropertyConstraints(jgm, PYPI_ARTIFACT_COORDINATES, "uuid", "version", "coordinates.extension",
+                                     "coordinates.name", "coordinates.build", "coordinates.abi", "coordinates.platform",
+                                     "coordinates.languageImplementationVersion", "coordinates.packaging",
+                                     "coordinates.distribution");
+
+        addVertexPropertyConstraints(jgm, ARTIFACT_TAG, "uuid");
+
+        addVertexPropertyConstraints(jgm, ARTIFACT_ID_GROUP, "uuid", "storageId", "repositoryId", "name");
+
+        addVertexPropertyConstraints(jgm, USER, "uuid", "username", "password",
+                                     "enabled", "roles", "securityTokenKey", "sourceId");
+    }
+
+    private void addVertexPropertyConstraints(JanusGraphManagement jgm,
+                                              String vertex,
+                                              String... propertykeys)
+    {
+        VertexLabel vertexLabel = jgm.getVertexLabel(vertex);
+        for (String propertyKey : propertykeys)
+        {
+            jgm.addProperties(vertexLabel, jgm.getPropertyKey(propertyKey));
+        }
     }
 
     private void createProperties(JanusGraphManagement jgm)

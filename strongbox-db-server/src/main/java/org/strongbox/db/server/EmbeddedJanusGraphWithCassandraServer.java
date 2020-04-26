@@ -126,6 +126,7 @@ public class EmbeddedJanusGraphWithCassandraServer
                                                            true)
                                                       .set("tx.log-tx", true)
                                                       .set("schema.default", "none")
+                                                      .set("schema.constraints", true)
                                                       .open();
 
         try
