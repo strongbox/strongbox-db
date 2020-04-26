@@ -75,6 +75,7 @@ public class InMemoryJanusGraphServer implements EmbeddedDbServer
 
         JanusGraph janusGraphLocal = JanusGraphFactory.build()
                                                       .set("storage.backend", "inmemory")
+                                                      .set("schema.default", "none")
                                                       .open();
 
         try

@@ -122,8 +122,10 @@ public class EmbeddedJanusGraphWithCassandraServer
                                                       .set("storage.password",
                                                            janusGraphProperties.getStoragePassword())
                                                       .set("storage.cql.keyspace", "strongbox")
-                                                      .set("storage.cql.only-use-local-consistency-for-system-operations", true)
+                                                      .set("storage.cql.only-use-local-consistency-for-system-operations",
+                                                           true)
                                                       .set("tx.log-tx", true)
+                                                      .set("schema.default", "none")
                                                       .open();
 
         try
