@@ -10,12 +10,13 @@ import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
 import static org.carlspring.strongbox.db.schema.Vertices.GENERIC_ARTIFACT_COORDINATES;
-import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.MAVEN_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.NPM_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Vertices.TRANSACTION_PROPAGATION;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
@@ -217,6 +218,7 @@ public class StrongboxSchema
         createProperties(jgm);
 
         // Vertices
+        makeVertexLabelIfDoesNotExist(jgm, TRANSACTION_PROPAGATION);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
@@ -254,17 +256,34 @@ public class StrongboxSchema
                           jgm.getVertexLabel(ARTIFACT),
                           jgm.getVertexLabel(ARTIFACT_TAG));
 
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+                          jgm.getVertexLabel(ARTIFACT_ID_GROUP),
+                          jgm.getVertexLabel(ARTIFACT));
+
         jgm.addConnection(jgm.getEdgeLabel(REMOTE_ARTIFACT_INHERIT_ARTIFACT),
                           jgm.getVertexLabel(REMOTE_ARTIFACT),
                           jgm.getVertexLabel(ARTIFACT));
 
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
-                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
-                          jgm.getVertexLabel(ARTIFACT_ID_GROUP),
-                          jgm.getVertexLabel(ARTIFACT));
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
     }
 
     private void applyPropertyConstraints(JanusGraphManagement jgm)
@@ -286,14 +305,28 @@ public class StrongboxSchema
         addVertexPropertyConstraints(jgm,
                                      REMOTE_ARTIFACT,
                                      "uuid",
-                                     "cached");
+                                     "cached",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      GENERIC_ARTIFACT_COORDINATES,
                                      "uuid",
                                      "version",
+                                     "coordinates.id",
                                      "coordinates.extension",
-                                     "coordinates.name");
+                                     "coordinates.name",
+                                     "coordinates.path",
+                                     "coordinates.scope",
+                                     "coordinates.groupId",
+                                     "coordinates.artifactId",
+                                     "coordinates.classifier",
+                                     "coordinates.distribution",
+                                     "coordinates.build",
+                                     "coordinates.abi",
+                                     "coordinates.platform",
+                                     "coordinates.packaging",
+                                     "coordinates.languageImplementationVersion",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      RAW_ARTIFACT_COORDINATES,
@@ -301,7 +334,8 @@ public class StrongboxSchema
                                      "version",
                                      "coordinates.extension",
                                      "coordinates.name",
-                                     "coordinates.path");
+                                     "coordinates.path",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      MAVEN_ARTIFACT_COORDINATES,
@@ -311,7 +345,8 @@ public class StrongboxSchema
                                      "coordinates.name",
                                      "coordinates.groupId",
                                      "coordinates.artifactId",
-                                     "coordinates.classifier");
+                                     "coordinates.classifier",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      NPM_ARTIFACT_COORDINATES,
@@ -319,7 +354,8 @@ public class StrongboxSchema
                                      "version",
                                      "coordinates.extension",
                                      "coordinates.name",
-                                     "coordinates.scope");
+                                     "coordinates.scope",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      NUGET_ARTIFACT_COORDINATES,
@@ -327,7 +363,8 @@ public class StrongboxSchema
                                      "version",
                                      "coordinates.extension",
                                      "coordinates.name",
-                                     "coordinates.id");
+                                     "coordinates.id",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      PYPI_ARTIFACT_COORDINATES,
@@ -338,30 +375,34 @@ public class StrongboxSchema
                                      "coordinates.build",
                                      "coordinates.abi",
                                      "coordinates.platform",
-                                     "coordinates.languageImplementationVersion",
                                      "coordinates.packaging",
-                                     "coordinates.distribution");
+                                     "coordinates.distribution",
+                                     "coordinates.languageImplementationVersion",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      ARTIFACT_TAG,
-                                     "uuid");
+                                     "uuid",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      ARTIFACT_ID_GROUP,
                                      "uuid",
                                      "storageId",
                                      "repositoryId",
-                                     "name");
+                                     "name",
+                                     "created");
 
         addVertexPropertyConstraints(jgm,
                                      USER,
                                      "uuid",
-                                     "username",
                                      "password",
                                      "enabled",
                                      "roles",
                                      "securityTokenKey",
-                                     "sourceId");
+                                     "sourceId",
+                                     "created",
+                                     "lastUpdated");
     }
 
     private void addVertexPropertyConstraints(JanusGraphManagement jgm,
