@@ -240,6 +240,31 @@ public class StrongboxSchema
         // Add property constraints
         applyPropertyConstraints(jgm);
 
+        // Add connection constraints
+        applyConnectionConstraints(jgm);
+    }
+
+    private void applyConnectionConstraints(JanusGraphManagement jgm)
+    {
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_HAS_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(ARTIFACT),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_HAS_TAGS),
+                          jgm.getVertexLabel(ARTIFACT),
+                          jgm.getVertexLabel(ARTIFACT_TAG));
+
+        jgm.addConnection(jgm.getEdgeLabel(REMOTE_ARTIFACT_INHERIT_ARTIFACT),
+                          jgm.getVertexLabel(REMOTE_ARTIFACT),
+                          jgm.getVertexLabel(ARTIFACT));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES),
+                          jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+                          jgm.getVertexLabel(ARTIFACT_ID_GROUP),
+                          jgm.getVertexLabel(ARTIFACT));
     }
 
     private void applyPropertyConstraints(JanusGraphManagement jgm)
