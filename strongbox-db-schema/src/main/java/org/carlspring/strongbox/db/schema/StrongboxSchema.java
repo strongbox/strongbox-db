@@ -16,7 +16,6 @@ import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDIN
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
-import static org.carlspring.strongbox.db.schema.Vertices.TRANSACTION_PROPAGATION;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
@@ -218,7 +217,6 @@ public class StrongboxSchema
         createProperties(jgm);
 
         // Vertices
-        makeVertexLabelIfDoesNotExist(jgm, TRANSACTION_PROPAGATION);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
