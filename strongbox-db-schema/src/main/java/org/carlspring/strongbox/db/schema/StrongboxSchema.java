@@ -5,6 +5,39 @@ import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFA
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
 import static org.carlspring.strongbox.db.schema.Edges.REMOTE_ARTIFACT_INHERIT_ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Properties.CACHED;
+import static org.carlspring.strongbox.db.schema.Properties.CHECKSUMS;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ABI;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ARTIFACT_ID;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_BUILD;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_CLASSIFIER;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_DISTRIBUTION;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_EXTENSION;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_GROUP_ID;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ID;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_LANGUAGE_IMPLEMENTATION_VERSION;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_NAME;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_PACKAGING;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_PATH;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_PLATFORM;
+import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_SCOPE;
+import static org.carlspring.strongbox.db.schema.Properties.CREATED;
+import static org.carlspring.strongbox.db.schema.Properties.DOWNLOAD_COUNT;
+import static org.carlspring.strongbox.db.schema.Properties.ENABLED;
+import static org.carlspring.strongbox.db.schema.Properties.FILE_NAMES;
+import static org.carlspring.strongbox.db.schema.Properties.LAST_UPDATED;
+import static org.carlspring.strongbox.db.schema.Properties.LAST_USED;
+import static org.carlspring.strongbox.db.schema.Properties.NAME;
+import static org.carlspring.strongbox.db.schema.Properties.PASSWORD;
+import static org.carlspring.strongbox.db.schema.Properties.REPOSITORY_ID;
+import static org.carlspring.strongbox.db.schema.Properties.ROLES;
+import static org.carlspring.strongbox.db.schema.Properties.SECURITY_TOKEN_KEY;
+import static org.carlspring.strongbox.db.schema.Properties.SIZE_IN_BYTES;
+import static org.carlspring.strongbox.db.schema.Properties.SOURCE_ID;
+import static org.carlspring.strongbox.db.schema.Properties.STORAGE_ID;
+import static org.carlspring.strongbox.db.schema.Properties.UUID;
+import static org.carlspring.strongbox.db.schema.Properties.VERSION;
+import static org.carlspring.strongbox.db.schema.Properties.*;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
@@ -135,78 +168,78 @@ public class StrongboxSchema
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(REMOTE_ARTIFACT),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_TAG),
                               true,
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               false,
                               false,
-                              jgm.getPropertyKey("storageId"),
-                              jgm.getPropertyKey("repositoryId")).ifPresent(result::add);
+                              jgm.getPropertyKey(STORAGE_ID),
+                              jgm.getPropertyKey(REPOSITORY_ID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               true,
-                              jgm.getPropertyKey("storageId"),
-                              jgm.getPropertyKey("repositoryId"),
-                              jgm.getPropertyKey("name")).ifPresent(result::add);
+                              jgm.getPropertyKey(STORAGE_ID),
+                              jgm.getPropertyKey(REPOSITORY_ID),
+                              jgm.getPropertyKey(NAME)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(USER),
                               true,
-                              jgm.getPropertyKey("uuid")).ifPresent(result::add);        
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);     
 
         return result;
     }
@@ -289,118 +322,118 @@ public class StrongboxSchema
         // Vertex Property Constraints
         addVertexPropertyConstraints(jgm,
                                      ARTIFACT,
-                                     "uuid",
-                                     "storageId",
-                                     "repositoryId",
-                                     "created",
-                                     "lastUpdated",
-                                     "lastUsed",
-                                     "sizeInBytes",
-                                     "downloadCount",
-                                     "filenames",
-                                     "checksums");
+                                     UUID,
+                                     STORAGE_ID,
+                                     REPOSITORY_ID,
+                                     CREATED,
+                                     LAST_UPDATED,
+                                     LAST_USED,
+                                     SIZE_IN_BYTES,
+                                     DOWNLOAD_COUNT,
+                                     FILE_NAMES,
+                                     CHECKSUMS);
 
         addVertexPropertyConstraints(jgm,
                                      REMOTE_ARTIFACT,
-                                     "uuid",
-                                     "cached",
-                                     "created");
+                                     UUID,
+                                     CACHED,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      GENERIC_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.id",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.path",
-                                     "coordinates.scope",
-                                     "coordinates.groupId",
-                                     "coordinates.artifactId",
-                                     "coordinates.classifier",
-                                     "coordinates.distribution",
-                                     "coordinates.build",
-                                     "coordinates.abi",
-                                     "coordinates.platform",
-                                     "coordinates.packaging",
-                                     "coordinates.languageImplementationVersion",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_ID,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_PATH,
+                                     COORDINATES_SCOPE,
+                                     COORDINATES_GROUP_ID,
+                                     COORDINATES_ARTIFACT_ID,
+                                     COORDINATES_CLASSIFIER,
+                                     COORDINATES_DISTRIBUTION,
+                                     COORDINATES_BUILD,
+                                     COORDINATES_ABI,
+                                     COORDINATES_PLATFORM,
+                                     COORDINATES_PACKAGING,
+                                     COORDINATES_LANGUAGE_IMPLEMENTATION_VERSION,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      RAW_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.path",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_PATH,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      MAVEN_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.groupId",
-                                     "coordinates.artifactId",
-                                     "coordinates.classifier",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_GROUP_ID,
+                                     COORDINATES_ARTIFACT_ID,
+                                     COORDINATES_CLASSIFIER,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      NPM_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.scope",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_SCOPE,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      NUGET_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.id",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_ID,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      PYPI_ARTIFACT_COORDINATES,
-                                     "uuid",
-                                     "version",
-                                     "coordinates.extension",
-                                     "coordinates.name",
-                                     "coordinates.build",
-                                     "coordinates.abi",
-                                     "coordinates.platform",
-                                     "coordinates.packaging",
-                                     "coordinates.distribution",
-                                     "coordinates.languageImplementationVersion",
-                                     "created");
+                                     UUID,
+                                     VERSION,
+                                     COORDINATES_EXTENSION,
+                                     COORDINATES_NAME,
+                                     COORDINATES_BUILD,
+                                     COORDINATES_ABI,
+                                     COORDINATES_PLATFORM,
+                                     COORDINATES_PACKAGING,
+                                     COORDINATES_DISTRIBUTION,
+                                     COORDINATES_LANGUAGE_IMPLEMENTATION_VERSION,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      ARTIFACT_TAG,
-                                     "uuid",
-                                     "created");
+                                     UUID,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      ARTIFACT_ID_GROUP,
-                                     "uuid",
-                                     "storageId",
-                                     "repositoryId",
-                                     "name",
-                                     "created");
+                                     UUID,
+                                     STORAGE_ID,
+                                     REPOSITORY_ID,
+                                     NAME,
+                                     CREATED);
 
         addVertexPropertyConstraints(jgm,
                                      USER,
-                                     "uuid",
-                                     "password",
-                                     "enabled",
-                                     "roles",
-                                     "securityTokenKey",
-                                     "sourceId",
-                                     "created",
-                                     "lastUpdated");
+                                     UUID,
+                                     PASSWORD,
+                                     ENABLED,
+                                     ROLES,
+                                     SECURITY_TOKEN_KEY,
+                                     SOURCE_ID,
+                                     CREATED,
+                                     LAST_UPDATED);
     }
 
     private void addVertexPropertyConstraints(JanusGraphManagement jgm,
@@ -416,66 +449,67 @@ public class StrongboxSchema
 
     private void createProperties(JanusGraphManagement jgm)
     {
-        makePropertyKeyIfDoesNotExist(jgm, "uuid", String.class).ifPresent(p -> jgm.setConsistency(p, ConsistencyModifier.LOCK));
-        makePropertyKeyIfDoesNotExist(jgm, "storageId", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "repositoryId", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "name", String.class);
-        makePropertyKeyIfDoesNotExist(jgm, "lastUpdated", Long.class, Cardinality.SINGLE);
-        
-        //Artifact
-        makePropertyKeyIfDoesNotExist(jgm, "sizeInBytes", Long.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "lastUsed", Long.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "created", Long.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "downloadCount", Integer.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "filenames", String.class, Cardinality.SET);
-        makePropertyKeyIfDoesNotExist(jgm, "checksums", String.class, Cardinality.SET);
-        
-        //RemoteArtifact
-        makePropertyKeyIfDoesNotExist(jgm, "cached", Boolean.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, UUID,
+                                      String.class).ifPresent(p -> jgm.setConsistency(p, ConsistencyModifier.LOCK));
+        makePropertyKeyIfDoesNotExist(jgm, STORAGE_ID, String.class);
+        makePropertyKeyIfDoesNotExist(jgm, REPOSITORY_ID, String.class);
+        makePropertyKeyIfDoesNotExist(jgm, NAME, String.class);
+        makePropertyKeyIfDoesNotExist(jgm, LAST_UPDATED, Long.class, Cardinality.SINGLE);
 
-        //Common coordinates
-        makePropertyKeyIfDoesNotExist(jgm, "version", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.extension", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.name", String.class, Cardinality.SINGLE);
-        
-        //Maven
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.groupId", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.artifactId", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.classifier", String.class, Cardinality.SINGLE);
-        
-        //Npm
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.scope", String.class, Cardinality.SINGLE);
-        
-        //Nuget
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.id", String.class, Cardinality.SINGLE);
-        
-        //P2
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.filename", String.class, Cardinality.SINGLE);
-        
-        //Pypi
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.build", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.languageImplementationVersion", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.abi", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.platform", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.packaging", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.distribution", String.class, Cardinality.SINGLE);
-        
-        //Raw
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.path", String.class, Cardinality.SINGLE);
-        
-        //Rpm
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.base_name", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.release", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.architecture", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "coordinates.package_type", String.class, Cardinality.SINGLE);
-        
-        //User
-        makePropertyKeyIfDoesNotExist(jgm, "username", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "password", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "enabled", Boolean.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "roles", String.class, Cardinality.SET);
-        makePropertyKeyIfDoesNotExist(jgm, "securityTokenKey", String.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, "sourceId", String.class, Cardinality.SINGLE);
+        // Artifact
+        makePropertyKeyIfDoesNotExist(jgm, SIZE_IN_BYTES, Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, LAST_USED, Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, CREATED, Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, DOWNLOAD_COUNT, Integer.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, FILE_NAMES, String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, CHECKSUMS, String.class, Cardinality.SET);
+
+        // RemoteArtifact
+        makePropertyKeyIfDoesNotExist(jgm, CACHED, Boolean.class, Cardinality.SINGLE);
+
+        // Common coordinates
+        makePropertyKeyIfDoesNotExist(jgm, VERSION, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_EXTENSION, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_NAME, String.class, Cardinality.SINGLE);
+
+        // Maven
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_GROUP_ID, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_ARTIFACT_ID, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_CLASSIFIER, String.class, Cardinality.SINGLE);
+
+        // Npm
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_SCOPE, String.class, Cardinality.SINGLE);
+
+        // Nuget
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_ID, String.class, Cardinality.SINGLE);
+
+        // P2
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_FILENAME, String.class, Cardinality.SINGLE);
+
+        // Pypi
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_BUILD, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_LANGUAGE_IMPLEMENTATION_VERSION, String.class,
+                                      Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_ABI, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_PLATFORM, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_PACKAGING, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_DISTRIBUTION, String.class, Cardinality.SINGLE);
+
+        // Raw
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_PATH, String.class, Cardinality.SINGLE);
+
+        // Rpm
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_BASE_NAME, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_RELEASE, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_ARCHITECTURE, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, COORDINATES_PACKAGE_TYPE, String.class, Cardinality.SINGLE);
+
+        // User
+        makePropertyKeyIfDoesNotExist(jgm, PASSWORD, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, ENABLED, Boolean.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, ROLES, String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, SECURITY_TOKEN_KEY, String.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, SOURCE_ID, String.class, Cardinality.SINGLE);
     }
 
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
