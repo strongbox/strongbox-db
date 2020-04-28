@@ -2,6 +2,7 @@ package org.carlspring.strongbox.db.schema;
 
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
+import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_ARCHIVE_LISTING;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
 import static org.carlspring.strongbox.db.schema.Edges.REMOTE_ARTIFACT_INHERIT_ARTIFACT;
@@ -29,7 +30,7 @@ import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_SCOPE;
 import static org.carlspring.strongbox.db.schema.Properties.CREATED;
 import static org.carlspring.strongbox.db.schema.Properties.DOWNLOAD_COUNT;
 import static org.carlspring.strongbox.db.schema.Properties.ENABLED;
-import static org.carlspring.strongbox.db.schema.Properties.FILE_NAMES;
+import static org.carlspring.strongbox.db.schema.Properties.FILE_NAME;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_UPDATED;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_USED;
 import static org.carlspring.strongbox.db.schema.Properties.NAME;
@@ -43,6 +44,7 @@ import static org.carlspring.strongbox.db.schema.Properties.STORAGE_ID;
 import static org.carlspring.strongbox.db.schema.Properties.UUID;
 import static org.carlspring.strongbox.db.schema.Properties.VERSION;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT;
+import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ARCHIVE_LISTING;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
@@ -265,6 +267,7 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
         makeVertexLabelIfDoesNotExist(jgm, USER);
+        makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ARCHIVE_LISTING);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
@@ -272,6 +275,7 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT_INHERIT_ARTIFACT, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_ARCHIVE_LISTING, ONE2MANY);
 
         // Add property constraints
         applyPropertyConstraints(jgm);
@@ -318,6 +322,10 @@ public class StrongboxSchema
                           jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_HAS_ARTIFACT_ARCHIVE_LISTING),
+                          jgm.getVertexLabel(ARTIFACT),
+                          jgm.getVertexLabel(ARTIFACT_ARCHIVE_LISTING));
+
     }
 
     private void applyPropertyConstraints(JanusGraphManagement jgm)
@@ -333,7 +341,6 @@ public class StrongboxSchema
                                      LAST_USED,
                                      SIZE_IN_BYTES,
                                      DOWNLOAD_COUNT,
-                                     FILE_NAMES,
                                      CHECKSUMS);
 
         addVertexPropertyConstraints(jgm,
@@ -437,6 +444,14 @@ public class StrongboxSchema
                                      SOURCE_ID,
                                      CREATED,
                                      LAST_UPDATED);
+
+        addVertexPropertyConstraints(jgm,
+                                     ARTIFACT_ARCHIVE_LISTING,
+                                     UUID,
+                                     STORAGE_ID,
+                                     REPOSITORY_ID,
+                                     FILE_NAME,
+                                     CREATED);
     }
 
     private void addVertexPropertyConstraints(JanusGraphManagement jgm,
@@ -464,7 +479,7 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, LAST_USED, Long.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, CREATED, Long.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, DOWNLOAD_COUNT, Integer.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, FILE_NAMES, String.class, Cardinality.SET);
+        makePropertyKeyIfDoesNotExist(jgm, FILE_NAME, String.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, CHECKSUMS, String.class, Cardinality.SET);
 
         // RemoteArtifact

@@ -16,4 +16,6 @@ public interface Vertices
     String ARTIFACT_TAG = "ArtifactTag";
     String ARTIFACT_ID_GROUP = "ArtifactIdGroup";
     String USER = "User";
+    String ARTIFACT_ARCHIVE_LISTING = "ArtifactArchiveListing";
+    
 }
