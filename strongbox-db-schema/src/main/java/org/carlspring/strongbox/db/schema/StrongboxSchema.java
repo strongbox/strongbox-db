@@ -245,6 +245,11 @@ public class StrongboxSchema
                               jgm.getVertexLabel(USER),
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(ARTIFACT_ARCHIVE_LISTING),
+                              true,
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
         return result;
     }
