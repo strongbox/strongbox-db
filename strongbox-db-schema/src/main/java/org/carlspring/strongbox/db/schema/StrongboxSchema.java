@@ -248,7 +248,7 @@ public class StrongboxSchema
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ARCHIVE_LISTING),
-                              true,
+                              false,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
         return result;
