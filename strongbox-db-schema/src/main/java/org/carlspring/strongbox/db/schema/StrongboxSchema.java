@@ -234,13 +234,6 @@ public class StrongboxSchema
                               jgm.getPropertyKey(REPOSITORY_ID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(ARTIFACT_ID_GROUP),
-                              true,
-                              jgm.getPropertyKey(STORAGE_ID),
-                              jgm.getPropertyKey(REPOSITORY_ID),
-                              jgm.getPropertyKey(NAME)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
                               jgm.getVertexLabel(USER),
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);     
