@@ -328,7 +328,8 @@ public class StrongboxSchema
                                      SIZE_IN_BYTES,
                                      DOWNLOAD_COUNT,
                                      FILE_NAMES,
-                                     CHECKSUMS);
+                                     CHECKSUMS,
+                                     CACHED);
 
         addVertexPropertyConstraints(jgm,
                                      REMOTE_ARTIFACT,
