@@ -4,8 +4,7 @@ import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_COORDINATES_INHE
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
-import static org.carlspring.strongbox.db.schema.Edges.REMOTE_ARTIFACT_INHERIT_ARTIFACT;
-import static org.carlspring.strongbox.db.schema.Properties.CACHED;
+import static org.carlspring.strongbox.db.schema.Properties.ARTIFACT_FILE_EXISTS;
 import static org.carlspring.strongbox.db.schema.Properties.CHECKSUMS;
 import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ABI;
 import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ARCHITECTURE;
@@ -52,7 +51,6 @@ import static org.carlspring.strongbox.db.schema.Vertices.NPM_ARTIFACT_COORDINAT
 import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
-import static org.carlspring.strongbox.db.schema.Vertices.REMOTE_ARTIFACT;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
@@ -175,11 +173,6 @@ public class StrongboxSchema
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(REMOTE_ARTIFACT),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
                               jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES),
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
@@ -248,7 +241,6 @@ public class StrongboxSchema
 
         // Vertices
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
-        makeVertexLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, RAW_ARTIFACT_COORDINATES);
@@ -263,7 +255,6 @@ public class StrongboxSchema
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_TAGS, MULTI);
-        makeEdgeLabelIfDoesNotExist(jgm, REMOTE_ARTIFACT_INHERIT_ARTIFACT, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
 
@@ -286,10 +277,6 @@ public class StrongboxSchema
 
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
                           jgm.getVertexLabel(ARTIFACT_ID_GROUP),
-                          jgm.getVertexLabel(ARTIFACT));
-
-        jgm.addConnection(jgm.getEdgeLabel(REMOTE_ARTIFACT_INHERIT_ARTIFACT),
-                          jgm.getVertexLabel(REMOTE_ARTIFACT),
                           jgm.getVertexLabel(ARTIFACT));
 
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
@@ -329,13 +316,7 @@ public class StrongboxSchema
                                      DOWNLOAD_COUNT,
                                      FILE_NAMES,
                                      CHECKSUMS,
-                                     CACHED);
-
-        addVertexPropertyConstraints(jgm,
-                                     REMOTE_ARTIFACT,
-                                     UUID,
-                                     CACHED,
-                                     CREATED);
+                                     ARTIFACT_FILE_EXISTS);
 
         addVertexPropertyConstraints(jgm,
                                      GENERIC_ARTIFACT_COORDINATES,
@@ -463,7 +444,7 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, CHECKSUMS, String.class, Cardinality.SET);
 
         // RemoteArtifact
-        makePropertyKeyIfDoesNotExist(jgm, CACHED, Boolean.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, ARTIFACT_FILE_EXISTS, Boolean.class, Cardinality.SINGLE);
 
         // Common coordinates
         makePropertyKeyIfDoesNotExist(jgm, VERSION, String.class, Cardinality.SINGLE);

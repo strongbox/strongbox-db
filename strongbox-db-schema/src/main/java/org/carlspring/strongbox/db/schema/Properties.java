@@ -16,7 +16,7 @@ public interface Properties
     String CREATED = "created";
     String DOWNLOAD_COUNT = "downloadCount";
     String CHECKSUMS = "checksums";
-    String CACHED = "cached";
+    String ARTIFACT_FILE_EXISTS = "artifactFileExists";
     String VERSION = "version";
     String USERNAME = "username";
     String PASSWORD = "password";

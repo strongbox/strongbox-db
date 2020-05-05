@@ -4,7 +4,6 @@ public interface Vertices
 {
 
     String ARTIFACT = "Artifact";
-    String REMOTE_ARTIFACT = "RemoteArtifact";
     String GENERIC_ARTIFACT_COORDINATES = "GenericArtifactCoordinates";
     String ARTIFACT_COORDINATES = "ArtifactCoordinates";
     String RAW_ARTIFACT_COORDINATES = "RawArtifactCoordinates";
