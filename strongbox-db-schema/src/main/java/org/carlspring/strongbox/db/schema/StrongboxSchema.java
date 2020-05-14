@@ -1,6 +1,6 @@
 package org.carlspring.strongbox.db.schema;
 
-import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES;
+import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
@@ -42,7 +42,6 @@ import static org.carlspring.strongbox.db.schema.Properties.STORAGE_ID;
 import static org.carlspring.strongbox.db.schema.Properties.UUID;
 import static org.carlspring.strongbox.db.schema.Properties.VERSION;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT;
-import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_ID_GROUP;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT_TAG;
 import static org.carlspring.strongbox.db.schema.Vertices.GENERIC_ARTIFACT_COORDINATES;
@@ -178,36 +177,6 @@ public class StrongboxSchema
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_TAG),
                               true,
                               true,
@@ -217,7 +186,6 @@ public class StrongboxSchema
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
-
         buildIndexIfNecessary(jgm,
                               Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_ID_GROUP),
@@ -242,7 +210,6 @@ public class StrongboxSchema
         // Vertices
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT);
         makeVertexLabelIfDoesNotExist(jgm, GENERIC_ARTIFACT_COORDINATES);
-        makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, RAW_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, MAVEN_ARTIFACT_COORDINATES);
         makeVertexLabelIfDoesNotExist(jgm, NPM_ARTIFACT_COORDINATES);
@@ -255,7 +222,7 @@ public class StrongboxSchema
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_TAGS, MULTI);
-        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES, ONE2ONE);
+        makeEdgeLabelIfDoesNotExist(jgm, EXTENDS, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
 
         // Add property constraints
@@ -279,23 +246,23 @@ public class StrongboxSchema
                           jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                           jgm.getVertexLabel(ARTIFACT));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+        jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+        jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+        jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+        jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_COORDINATES_INHERIT_GENERIC_ARTIFACT_COORDINATES),
+        jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 

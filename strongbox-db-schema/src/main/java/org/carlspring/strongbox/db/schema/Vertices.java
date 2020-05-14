@@ -5,7 +5,6 @@ public interface Vertices
 
     String ARTIFACT = "Artifact";
     String GENERIC_ARTIFACT_COORDINATES = "GenericArtifactCoordinates";
-    String ARTIFACT_COORDINATES = "ArtifactCoordinates";
     String RAW_ARTIFACT_COORDINATES = "RawArtifactCoordinates";
     String MAVEN_ARTIFACT_COORDINATES = "MavenArtifactCoordinates";
     String NPM_ARTIFACT_COORDINATES = "NpmArtifactCoordinates";
