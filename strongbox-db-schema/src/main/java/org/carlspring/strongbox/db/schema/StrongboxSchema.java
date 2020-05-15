@@ -177,31 +177,6 @@ public class StrongboxSchema
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(RAW_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(MAVEN_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(NPM_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(NUGET_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
-                              jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
-                              true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
-        buildIndexIfNecessary(jgm,
-                              Vertex.class,
                               jgm.getVertexLabel(ARTIFACT_TAG),
                               true,
                               true,
