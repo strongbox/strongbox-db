@@ -68,7 +68,6 @@ public class CassandraEmbeddedProperties implements CassandraEmbeddedConfigurati
         configLocal.start_native_transport = true;
         configLocal.native_transport_port = port;
 
-        configLocal.start_rpc = false;
         configLocal.incremental_backups = false;
         configLocal.snapshot_before_compaction = false;
         configLocal.auto_snapshot = false;
@@ -85,8 +84,6 @@ public class CassandraEmbeddedProperties implements CassandraEmbeddedConfigurati
         configLocal.dynamic_snitch_update_interval_in_ms = 100;
         configLocal.dynamic_snitch_reset_interval_in_ms = 600000;
         configLocal.dynamic_snitch_badness_threshold = 0.1;
-        configLocal.request_scheduler = "org.apache.cassandra.scheduler.NoScheduler";
-        configLocal.index_interval = 128;
 
         this.config = configLocal;
     }
