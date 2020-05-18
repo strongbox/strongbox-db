@@ -11,8 +11,8 @@
     
     <artifactId>strongbox-db</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-issues-1775-SNAPSHOT</version>
-    
+    <version>1.0-issues-1775-cache-SNAPSHOT</version>
+
     <properties>
         <serverId />
         <deployUrl />

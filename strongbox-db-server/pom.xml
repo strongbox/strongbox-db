@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.carlspring.strongbox</groupId>
         <artifactId>strongbox-db</artifactId>
-        <version>1.0-issues-1775-SNAPSHOT</version>
+        <version>1.0-issues-1775-cache-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
