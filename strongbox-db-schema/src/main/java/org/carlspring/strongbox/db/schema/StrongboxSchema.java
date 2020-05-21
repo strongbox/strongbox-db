@@ -57,7 +57,10 @@ import static org.janusgraph.core.Multiplicity.MULTI;
 import static org.janusgraph.core.Multiplicity.ONE2ONE;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -107,10 +110,12 @@ public class StrongboxSchema
         }
 
         jgm = jg.openManagement();
-        Set<String> indexes;
+        Set<String> compositeIndexes;
+        Map<String, String> relationIndexes;
         try
         {
-            indexes = createIndexes(jg, jgm);
+            compositeIndexes = createIndexes(jg, jgm);
+            relationIndexes = createRelationIndexes(jg, jgm);
             jgm.commit();
         }
         catch (Exception e)
@@ -120,7 +125,7 @@ public class StrongboxSchema
             throw new RuntimeException("Failed to create indexes.", e);
         }
 
-        for (String janusGraphIndex : indexes)
+        for (String janusGraphIndex : compositeIndexes)
         {
             logger.info(String.format("Wait index [%s] to be registered.", janusGraphIndex));
             ManagementSystem.awaitGraphIndexStatus(jg, janusGraphIndex).call();
@@ -129,8 +134,9 @@ public class StrongboxSchema
         jgm = jg.openManagement();
         try
         {
-            enableIndexes(jgm, indexes);
+            enableIndexes(jgm, compositeIndexes);
             jgm.commit();
+            enableRelationIndexes(jg, relationIndexes);
         }
         catch (Exception e)
         {
@@ -138,7 +144,7 @@ public class StrongboxSchema
             jgm.rollback();
             throw new RuntimeException("Failed to enable indexes.", e);
         }
-
+        
         jgm = jg.openManagement();
         try
         {
@@ -161,7 +167,40 @@ public class StrongboxSchema
             jgm.updateIndex(jgm.getGraphIndex(janusGraphIndex), SchemaAction.ENABLE_INDEX).get();
         }
     }
+    
+    protected void enableRelationIndexes(JanusGraph jg,
+                                         Map<String, String> indexes)
+        throws InterruptedException,
+        ExecutionException
+    {
+        Set<Entry<String, String>> entrySet = indexes.entrySet();
+        for (Entry<String, String> e : entrySet)
+        {
+            logger.info(String.format("Enabling index [%s].", e.getKey()));
+            ManagementSystem.awaitRelationIndexStatus(jg, e.getKey(), e.getValue()).call();
 
+        }
+    }
+
+    protected Map<String, String> createRelationIndexes(JanusGraph jg,
+                                                JanusGraphManagement jgm)
+    {
+        Map<String, String> result = new HashMap<>();
+        
+        String name = ARTIFACT_GROUP_HAS_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
+        if (!jgm.containsGraphIndex(name))
+        {
+            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+                               name,
+                               Direction.BOTH,
+                               Order.asc,
+                               jgm.getPropertyKey(TAG_NAME));
+            result.put(name, ARTIFACT_GROUP_HAS_ARTIFACTS);
+        }
+        
+        return result;
+    }
+    
     protected Set<String> createIndexes(JanusGraph jg,
                                         JanusGraphManagement jgm)
         throws InterruptedException
@@ -202,17 +241,6 @@ public class StrongboxSchema
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);     
 
-        String name = ARTIFACT_GROUP_HAS_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
-        if (!jgm.containsGraphIndex(name))
-        {
-            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
-                               name,
-                               Direction.OUT,
-                               Order.asc,
-                               jgm.getPropertyKey(TAG_NAME));
-            result.add(name);
-        }
-        
         return result;
     }
 
