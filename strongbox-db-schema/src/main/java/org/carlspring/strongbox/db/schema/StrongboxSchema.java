@@ -1,9 +1,9 @@
 package org.carlspring.strongbox.db.schema;
 
-import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
+import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
 import static org.carlspring.strongbox.db.schema.Properties.ARTIFACT_FILE_EXISTS;
 import static org.carlspring.strongbox.db.schema.Properties.CHECKSUMS;
 import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ABI;
@@ -29,7 +29,6 @@ import static org.carlspring.strongbox.db.schema.Properties.CREATED;
 import static org.carlspring.strongbox.db.schema.Properties.DOWNLOAD_COUNT;
 import static org.carlspring.strongbox.db.schema.Properties.ENABLED;
 import static org.carlspring.strongbox.db.schema.Properties.FILE_NAMES;
-import static org.carlspring.strongbox.db.schema.Properties.TAG_NAME;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_UPDATED;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_USED;
 import static org.carlspring.strongbox.db.schema.Properties.NAME;
@@ -40,6 +39,7 @@ import static org.carlspring.strongbox.db.schema.Properties.SECURITY_TOKEN_KEY;
 import static org.carlspring.strongbox.db.schema.Properties.SIZE_IN_BYTES;
 import static org.carlspring.strongbox.db.schema.Properties.SOURCE_ID;
 import static org.carlspring.strongbox.db.schema.Properties.STORAGE_ID;
+import static org.carlspring.strongbox.db.schema.Properties.TAG_NAME;
 import static org.carlspring.strongbox.db.schema.Properties.UUID;
 import static org.carlspring.strongbox.db.schema.Properties.VERSION;
 import static org.carlspring.strongbox.db.schema.Vertices.ARTIFACT;
@@ -54,7 +54,6 @@ import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINAT
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
-import static org.janusgraph.core.Multiplicity.ONE2MANY;
 import static org.janusgraph.core.Multiplicity.ONE2ONE;
 
 import java.util.Arrays;
@@ -64,6 +63,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tinkerpop.gremlin.process.traversal.Order;
+import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.Cardinality;
@@ -201,6 +202,17 @@ public class StrongboxSchema
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);     
 
+        String name = ARTIFACT_GROUP_HAS_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
+        if (!jgm.containsGraphIndex(name))
+        {
+            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+                               name,
+                               Direction.OUT,
+                               Order.asc,
+                               jgm.getPropertyKey(TAG_NAME));
+            result.add(name);
+        }
+        
         return result;
     }
 
@@ -225,7 +237,7 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_TAGS, MULTI);
         makeEdgeLabelIfDoesNotExist(jgm, EXTENDS, ONE2ONE);
-        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, MULTI);
 
         // Add property constraints
         applyPropertyConstraints(jgm);
