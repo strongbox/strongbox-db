@@ -192,7 +192,7 @@ public class StrongboxSchema
         {
             jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
                                name,
-                               Direction.BOTH,
+                               Direction.OUT,
                                Order.asc,
                                jgm.getPropertyKey(TAG_NAME));
             result.put(name, ARTIFACT_GROUP_HAS_ARTIFACTS);
