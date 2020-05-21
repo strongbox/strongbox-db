@@ -25,6 +25,7 @@ public interface Properties
     String SECURITY_TOKEN_KEY = "securityTokenKey";
     String SOURCE_ID = "sourceId";
     String FILE_NAMES = "filenames";
+    String TAG_NAME = "tagName";
     String COORDINATES_EXTENSION = "coordinates.extension";
     String COORDINATES_NAME = "coordinates.name";
     String COORDINATES_GROUP_ID = "coordinates.groupId";

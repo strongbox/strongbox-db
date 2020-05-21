@@ -29,6 +29,7 @@ import static org.carlspring.strongbox.db.schema.Properties.CREATED;
 import static org.carlspring.strongbox.db.schema.Properties.DOWNLOAD_COUNT;
 import static org.carlspring.strongbox.db.schema.Properties.ENABLED;
 import static org.carlspring.strongbox.db.schema.Properties.FILE_NAMES;
+import static org.carlspring.strongbox.db.schema.Properties.TAG_NAME;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_UPDATED;
 import static org.carlspring.strongbox.db.schema.Properties.LAST_USED;
 import static org.carlspring.strongbox.db.schema.Properties.NAME;
@@ -66,6 +67,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.Cardinality;
+import org.janusgraph.core.EdgeLabel;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.Multiplicity;
 import org.janusgraph.core.PropertyKey;
@@ -380,6 +382,10 @@ public class StrongboxSchema
                                      SOURCE_ID,
                                      CREATED,
                                      LAST_UPDATED);
+        
+        addEdgePropertyConstraints(jgm, 
+                                   ARTIFACT_GROUP_HAS_ARTIFACTS, 
+                                   TAG_NAME);
     }
 
     private void addVertexPropertyConstraints(JanusGraphManagement jgm,
@@ -392,6 +398,17 @@ public class StrongboxSchema
             jgm.addProperties(vertexLabel, jgm.getPropertyKey(propertyKey));
         }
     }
+    
+    private void addEdgePropertyConstraints(JanusGraphManagement jgm,
+                                            String label,
+                                            String... propertykeys)
+    {
+        EdgeLabel edge = jgm.getEdgeLabel(label);
+        for (String propertyKey : propertykeys)
+        {
+            jgm.addProperties(edge, jgm.getPropertyKey(propertyKey));
+        }
+    }
 
     private void createProperties(JanusGraphManagement jgm)
     {
@@ -401,6 +418,7 @@ public class StrongboxSchema
         makePropertyKeyIfDoesNotExist(jgm, REPOSITORY_ID, String.class);
         makePropertyKeyIfDoesNotExist(jgm, NAME, String.class);
         makePropertyKeyIfDoesNotExist(jgm, LAST_UPDATED, Long.class, Cardinality.SINGLE);
+        makePropertyKeyIfDoesNotExist(jgm, TAG_NAME, String.class, Cardinality.SINGLE);
 
         // Artifact
         makePropertyKeyIfDoesNotExist(jgm, SIZE_IN_BYTES, Long.class, Cardinality.SINGLE);
