@@ -66,7 +66,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tinkerpop.gremlin.process.traversal.Order;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -135,8 +134,8 @@ public class StrongboxSchema
         try
         {
             enableIndexes(jgm, compositeIndexes);
+            enableRelationIndexes(jgm, relationIndexes);
             jgm.commit();
-            enableRelationIndexes(jg, relationIndexes);
         }
         catch (Exception e)
         {
@@ -168,7 +167,7 @@ public class StrongboxSchema
         }
     }
     
-    protected void enableRelationIndexes(JanusGraph jg,
+    protected void enableRelationIndexes(JanusGraphManagement jgm,
                                          Map<String, String> indexes)
         throws InterruptedException,
         ExecutionException
@@ -177,8 +176,7 @@ public class StrongboxSchema
         for (Entry<String, String> e : entrySet)
         {
             logger.info(String.format("Enabling index [%s].", e.getKey()));
-            ManagementSystem.awaitRelationIndexStatus(jg, e.getKey(), e.getValue()).call();
-
+            jgm.updateIndex(jgm.getRelationIndex(jgm.getRelationType(e.getValue()), e.getKey()), SchemaAction.ENABLE_INDEX).get();
         }
     }
 
@@ -193,7 +191,6 @@ public class StrongboxSchema
             jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
                                name,
                                Direction.OUT,
-                               Order.asc,
                                jgm.getPropertyKey(TAG_NAME));
             result.put(name, ARTIFACT_GROUP_HAS_ARTIFACTS);
         }
