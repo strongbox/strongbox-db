@@ -130,6 +130,12 @@ public class StrongboxSchema
             ManagementSystem.awaitGraphIndexStatus(jg, janusGraphIndex).call();
         }
 
+        for (Entry<String, String> relationIndex : relationIndexes.entrySet())
+        {
+            logger.info(String.format("Wait index [%s] to be registered.", relationIndex.getKey()));
+            ManagementSystem.awaitRelationIndexStatus(jg, relationIndex.getKey(), relationIndex.getValue()).call();           
+        }
+        
         jgm = jg.openManagement();
         try
         {
