@@ -2,12 +2,13 @@
 
 def SERVER_ID = 'carlspring'
 def SNAPSHOT_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-snapshots'
-def RELEASE_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-releases/'
-def PR_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-pull-requests/'
+def RELEASE_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-releases'
+def PR_SERVER_URL = 'https://repo.carlspring.org/content/repositories/carlspring-oss-pull-requests'
 
 // Notification settings for "master" and "branch/pr"
 def notifyMaster = [notifyAdmins: true, recipients: [culprits(), requestor()]]
 def notifyBranch = [recipients: [brokenTestsSuspects(), requestor()]]
+def isMasterBranch = 'master'.equals(env.BRANCH_NAME);
 
 pipeline {
     agent {
@@ -33,6 +34,9 @@ pipeline {
         disableConcurrentBuilds()
         skipStagesAfterUnstable()
     }
+    triggers {
+        cron(isMasterBranch ? '' : 'H * * * */6')
+    }
     stages {
         stage('Node') {
             steps {
@@ -54,12 +58,7 @@ pipeline {
         stage('Deploy') {
             when {
                 expression {
-                    (currentBuild.result == null || currentBuild.result == 'SUCCESS') &&
-                    (
-                        BRANCH_NAME == 'master' ||
-                        env.VERSION.contains("PR-${env.CHANGE_ID}") ||
-                        env.VERSION.contains(BRANCH_NAME)
-                    )
+                    isMasterBranch || isDeployableTempVersion()
                 }
             }
             steps {
