@@ -1,6 +1,7 @@
 package org.carlspring.strongbox.db.schema;
 
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_ARTIFACTS;
+import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
 import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
@@ -52,6 +53,7 @@ import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDIN
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
+import static org.janusgraph.core.Multiplicity.ONE2MANY;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
 import static org.janusgraph.core.Multiplicity.ONE2ONE;
@@ -191,14 +193,14 @@ public class StrongboxSchema
     {
         Map<String, String> result = new HashMap<>();
         
-        String name = ARTIFACT_GROUP_HAS_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
+        String name = ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
         if (!jgm.containsGraphIndex(name))
         {
-            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS),
                                name,
                                Direction.OUT,
                                jgm.getPropertyKey(TAG_NAME));
-            result.put(name, ARTIFACT_GROUP_HAS_ARTIFACTS);
+            result.put(name, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS);
         }
         
         return result;
@@ -268,7 +270,8 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_TAGS, MULTI);
         makeEdgeLabelIfDoesNotExist(jgm, EXTENDS, ONE2ONE);
-        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, MULTI);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
+        makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS, MULTI);
 
         // Add property constraints
         applyPropertyConstraints(jgm);
@@ -288,6 +291,10 @@ public class StrongboxSchema
                           jgm.getVertexLabel(ARTIFACT_TAG));
 
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
+                          jgm.getVertexLabel(ARTIFACT_ID_GROUP),
+                          jgm.getVertexLabel(ARTIFACT));
+        
+        jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS),
                           jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                           jgm.getVertexLabel(ARTIFACT));
 
@@ -427,7 +434,7 @@ public class StrongboxSchema
                                      LAST_UPDATED);
         
         addEdgePropertyConstraints(jgm, 
-                                   ARTIFACT_GROUP_HAS_ARTIFACTS, 
+                                   ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS, 
                                    TAG_NAME);
     }
 
