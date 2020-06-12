@@ -189,10 +189,10 @@ public class StrongboxSchema
     }
 
     protected Map<String, String> createRelationIndexes(JanusGraph jg,
-                                                JanusGraphManagement jgm)
+                                                        JanusGraphManagement jgm)
     {
         Map<String, String> result = new HashMap<>();
-        
+
         String name = ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
         if (!jgm.containsGraphIndex(name))
         {
@@ -200,9 +200,21 @@ public class StrongboxSchema
                                name,
                                Direction.OUT,
                                jgm.getPropertyKey(TAG_NAME));
+
             result.put(name, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS);
         }
         
+        name = ARTIFACT_HAS_TAGS + "By" + StringUtils.capitalize(TAG_NAME);
+        if (!jgm.containsGraphIndex(name))
+        {
+            jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_HAS_TAGS),
+                               name,
+                               Direction.OUT,
+                               jgm.getPropertyKey(TAG_NAME));
+
+            result.put(name, ARTIFACT_HAS_TAGS);
+        }
+
         return result;
     }
     
