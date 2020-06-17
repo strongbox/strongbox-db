@@ -1,5 +1,6 @@
 package org.carlspring.strongbox.db.server;
 
+import org.carlspring.strongbox.db.schema.StrongboxSchema;
 import org.janusgraph.core.JanusGraph;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,9 +29,10 @@ class EmbeddedDbServerConfiguration
     }
 
     @Bean
-    JanusGraph JanusGraph(JanusGraphServer server)
+    JanusGraph janusGraph(JanusGraphServer server)
+        throws Exception
     {
-        return server.getJanusGraph();
+        return new StrongboxSchema().createSchema(server.getJanusGraph());
     }
 
     @Bean
