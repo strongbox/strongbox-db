@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.strongbox.db.server.CassandraEmbeddedConfiguration;
 import org.strongbox.db.server.CassandraEmbeddedProperties;
 import org.strongbox.db.server.EmbeddedDbServer;
-import org.strongbox.db.server.EmbeddedJanusGraphWithCassandraServer;
+import org.strongbox.db.server.JanusGraphWithEmbeddedCassandra;
 import org.strongbox.db.server.JanusGraphConfiguration;
 import org.strongbox.db.server.JanusGraphProperties;
 
@@ -27,13 +27,13 @@ class EmbeddedDbServerConfiguration
     EmbeddedDbServer embeddedDbServer(CassandraEmbeddedConfiguration cassandraConfiguration,
                                       JanusGraphConfiguration janusGraphConfiguration)
     {
-        return new EmbeddedJanusGraphWithCassandraServer(cassandraConfiguration, janusGraphConfiguration);
+        return new JanusGraphWithEmbeddedCassandra(cassandraConfiguration, janusGraphConfiguration);
     }
 
     @Bean
     JanusGraph JanusGraph(EmbeddedDbServer server)
     {
-        return ((EmbeddedJanusGraphWithCassandraServer) server).getJanusGraph();
+        return ((JanusGraphWithEmbeddedCassandra) server).getJanusGraph();
     }
 
     @Bean

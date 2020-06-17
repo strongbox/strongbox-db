@@ -194,7 +194,7 @@ public class StrongboxSchema
         Map<String, String> result = new HashMap<>();
         
         String name = ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
-        if (!jgm.containsGraphIndex(name))
+        if (!jgm.containsRelationIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS), name))
         {
             jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS),
                                name,
