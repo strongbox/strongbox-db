@@ -1,17 +1,16 @@
 package org.carlspring.strongbox.db.server;
 
 import org.janusgraph.core.JanusGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.strongbox.db.server.CassandraEmbeddedConfiguration;
 import org.strongbox.db.server.CassandraEmbeddedProperties;
-import org.strongbox.db.server.EmbeddedDbServer;
-import org.strongbox.db.server.JanusGraphWithEmbeddedCassandra;
 import org.strongbox.db.server.JanusGraphConfiguration;
 import org.strongbox.db.server.JanusGraphProperties;
+import org.strongbox.db.server.JanusGraphServer;
+import org.strongbox.db.server.JanusGraphWithEmbeddedCassandra;
 
 /**
  * @author Przemyslaw Fusik
@@ -21,19 +20,17 @@ import org.strongbox.db.server.JanusGraphProperties;
 class EmbeddedDbServerConfiguration
 {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmbeddedDbServerConfiguration.class);
-
     @Bean
-    EmbeddedDbServer embeddedDbServer(CassandraEmbeddedConfiguration cassandraConfiguration,
+    JanusGraphServer embeddedDbServer(CassandraEmbeddedConfiguration cassandraConfiguration,
                                       JanusGraphConfiguration janusGraphConfiguration)
     {
         return new JanusGraphWithEmbeddedCassandra(cassandraConfiguration, janusGraphConfiguration);
     }
 
     @Bean
-    JanusGraph JanusGraph(EmbeddedDbServer server)
+    JanusGraph JanusGraph(JanusGraphServer server)
     {
-        return ((JanusGraphWithEmbeddedCassandra) server).getJanusGraph();
+        return server.getJanusGraph();
     }
 
     @Bean
@@ -44,9 +41,10 @@ class EmbeddedDbServerConfiguration
     }
 
     @Bean
-    CassandraEmbeddedConfiguration cassandraEmbeddedConfiguration(JanusGraphConfiguration janusGraphConfiguration)
+    CassandraEmbeddedConfiguration cassandraEmbeddedConfiguration(@Value("${strongbox.db.janus-graph.storage-root}") String storageRoot,
+                                                                  JanusGraphConfiguration janusGraphConfiguration)
     {
-        return CassandraEmbeddedProperties.getInstance(janusGraphConfiguration.getStorageRoot(),
+        return CassandraEmbeddedProperties.getInstance(storageRoot,
                                                        janusGraphConfiguration.getStoragePort());
     }
 

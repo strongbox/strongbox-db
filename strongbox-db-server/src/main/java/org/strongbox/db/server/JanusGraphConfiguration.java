@@ -11,6 +11,4 @@ public interface JanusGraphConfiguration
 
     Integer getStoragePort();
 
-    String getStorageRoot();
-
 }

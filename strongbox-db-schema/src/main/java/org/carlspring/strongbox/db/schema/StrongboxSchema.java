@@ -94,9 +94,11 @@ public class StrongboxSchema
 
     private static final Logger logger = LoggerFactory.getLogger(StrongboxSchema.class);
 
-    public void createSchema(JanusGraph jg)
+    public JanusGraph createSchema(JanusGraph jg)
         throws InterruptedException
     {
+        logger.info("Apply schema changes.");
+        
         JanusGraphManagement jgm = jg.openManagement();
         try
         {
@@ -161,6 +163,10 @@ public class StrongboxSchema
         {
             jgm.rollback();
         }
+        
+        logger.info("Schema changes applied.");
+        
+        return jg;
     }
 
     protected void enableIndexes(JanusGraphManagement jgm,

@@ -7,7 +7,6 @@ public class JanusGraphProperties implements JanusGraphConfiguration
     private String storagePassword;
     private String storageHost;
     private Integer storagePort;
-    private String storageRoot;
 
     public JanusGraphProperties()
     {
@@ -16,14 +15,12 @@ public class JanusGraphProperties implements JanusGraphConfiguration
     public JanusGraphProperties(String storageUsername,
                                 String storagePassword,
                                 String storageHost,
-                                Integer storagePort,
-                                String storageRoot)
+                                Integer storagePort)
     {
         this.storageUsername = storageUsername;
         this.storagePassword = storagePassword;
         this.storageHost = storageHost;
         this.storagePort = storagePort;
-        this.storageRoot = storageRoot;
     }
 
     @Override
@@ -50,12 +47,6 @@ public class JanusGraphProperties implements JanusGraphConfiguration
         return storagePort;
     }
 
-    @Override
-    public String getStorageRoot()
-    {
-        return storageRoot;
-    }
-
     public void setStorageUsername(String storageUsername)
     {
         this.storageUsername = storageUsername;
@@ -74,11 +65,6 @@ public class JanusGraphProperties implements JanusGraphConfiguration
     public void setStoragePort(Integer storagePort)
     {
         this.storagePort = storagePort;
-    }
-
-    public void setStorageRoot(String storageRoot)
-    {
-        this.storageRoot = storageRoot;
     }
 
 }
