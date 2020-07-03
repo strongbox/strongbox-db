@@ -5,7 +5,7 @@ import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_TAGGED
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
 import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
-import static org.carlspring.strongbox.db.schema.Edges.USER_HAS_USER_ROLES;
+import static org.carlspring.strongbox.db.schema.Edges.USER_HAS_SECURITY_ROLES;
 import static org.carlspring.strongbox.db.schema.Properties.ARTIFACT_FILE_EXISTS;
 import static org.carlspring.strongbox.db.schema.Properties.CHECKSUMS;
 import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ABI;
@@ -53,7 +53,7 @@ import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDIN
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
-import static org.carlspring.strongbox.db.schema.Vertices.USER_ROLE;
+import static org.carlspring.strongbox.db.schema.Vertices.SECURITY_ROLE;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
 import static org.janusgraph.core.Multiplicity.ONE2MANY;
@@ -249,7 +249,7 @@ public class StrongboxSchema
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
         buildIndexIfNecessary(jgm,
                               Vertex.class,
-                              jgm.getVertexLabel(USER_ROLE),
+                              jgm.getVertexLabel(SECURITY_ROLE),
                               true,
                               jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
@@ -272,7 +272,7 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
         makeVertexLabelIfDoesNotExist(jgm, USER);
-        makeVertexLabelIfDoesNotExist(jgm, USER_ROLE);
+        makeVertexLabelIfDoesNotExist(jgm, SECURITY_ROLE);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
@@ -280,7 +280,7 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, EXTENDS, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS, MULTI);
-        makeEdgeLabelIfDoesNotExist(jgm, USER_HAS_USER_ROLES, MULTI);
+        makeEdgeLabelIfDoesNotExist(jgm, USER_HAS_SECURITY_ROLES, MULTI);
 
         // Add property constraints
         applyPropertyConstraints(jgm);
@@ -327,9 +327,9 @@ public class StrongboxSchema
                           jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
 
-        jgm.addConnection(jgm.getEdgeLabel(USER_HAS_USER_ROLES),
+        jgm.addConnection(jgm.getEdgeLabel(USER_HAS_SECURITY_ROLES),
                           jgm.getVertexLabel(USER),
-                          jgm.getVertexLabel(USER_ROLE));
+                          jgm.getVertexLabel(SECURITY_ROLE));
 
     }
 
@@ -444,9 +444,9 @@ public class StrongboxSchema
                                      SOURCE_ID,
                                      CREATED,
                                      LAST_UPDATED);
-        
+
         addVertexPropertyConstraints(jgm,
-                                     USER_ROLE,
+                                     SECURITY_ROLE,
                                      UUID,
                                      CREATED);
 
