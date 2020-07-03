@@ -3,13 +3,10 @@ spring:
     web-application-type: NONE
 strongbox:
   db:
-    janus-graph:
+    janusgraph:
       #TODO: [First start] randomize
-      storage-username: cassandra
-      storage-password: cassandra
-      storage-host: 127.0.0.1
-      storage-port: 49142
-      storage-root: ./target/db
-logging:
-  level:
-    liquibase: INFO
+      storage:
+        username: cassandra
+        password: cassandra
+        host: 127.0.0.1
+        port: 49142

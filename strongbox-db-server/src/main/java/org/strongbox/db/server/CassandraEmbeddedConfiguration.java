@@ -5,7 +5,8 @@ public interface CassandraEmbeddedConfiguration
 
     Integer getPort();
 
-    String getStorageFolder();
+    String getStorageRoot();
 
-    String getCassandraConfigLoaderClassName();
+    String getConfigLocatoion();
+    
 }

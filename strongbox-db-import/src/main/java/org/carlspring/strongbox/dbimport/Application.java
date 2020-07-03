@@ -1,4 +1,4 @@
-package org.carlspring.strongbox.db;
+package org.carlspring.strongbox.dbimport;
 
 import org.janusgraph.core.JanusGraph;
 import org.springframework.boot.SpringApplication;

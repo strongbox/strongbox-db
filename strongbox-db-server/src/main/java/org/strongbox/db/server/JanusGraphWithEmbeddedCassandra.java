@@ -10,6 +10,7 @@ import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.cassandra.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.strongbox.db.server.cassandra.CassandraEmbeddedPropertiesLoader;
 
 /**
  * Embedded JanusGraph+Cassandra server
@@ -61,7 +62,8 @@ public class JanusGraphWithEmbeddedCassandra extends JanusGraphWithRemoteCassand
             return cassandraDaemon;
         }
 
-        System.setProperty("cassandra.config.loader", cassandraEmbeddedProperties.getCassandraConfigLoaderClassName());
+        Class<CassandraEmbeddedPropertiesLoader> configLoaderClass = CassandraEmbeddedPropertiesLoader.bootstrap(cassandraEmbeddedProperties);
+        System.setProperty("cassandra.config.loader", configLoaderClass.getName());
 
         System.setProperty("cassandra-foreground", "true");
         System.setProperty("cassandra.native.epoll.enabled", "true");

@@ -41,6 +41,30 @@
 
     <build>
         <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-dependencies</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>${project.groupId}</groupId>
+                      <artifactId>strongbox-db-server</artifactId>
+                      <version>${project.version}</version>
+                      <type>jar</type>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>        
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -53,7 +77,10 @@
                         </goals>
                         <configuration>
                             <jvmArguments>-Xmx1024m</jvmArguments>
-                            <arguments>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</arguments>
+                            <arguments>
+                              --strongbox.db.cassandra.config-location=jar:file:${project.build.directory}/strongbox-db-server-${project.version}.jar!/cassandra.yaml 
+                              --strongbox.db.janusgraph.storage.root=${project.build.directory}/db
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

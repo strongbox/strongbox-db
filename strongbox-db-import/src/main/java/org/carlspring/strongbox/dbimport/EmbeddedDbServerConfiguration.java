@@ -1,9 +1,10 @@
-package org.carlspring.strongbox.db.server;
+package org.carlspring.strongbox.dbimport;
 
 import org.carlspring.strongbox.db.schema.StrongboxSchema;
 import org.janusgraph.core.JanusGraph;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.strongbox.db.server.CassandraEmbeddedConfiguration;
@@ -42,12 +43,16 @@ class EmbeddedDbServerConfiguration
         return new JanusGraphProperties();
     }
 
-    @Bean
-    CassandraEmbeddedConfiguration cassandraEmbeddedConfiguration(@Value("${strongbox.db.janus-graph.storage-root}") String storageRoot,
-                                                                  JanusGraphConfiguration janusGraphConfiguration)
-    {
-        return CassandraEmbeddedProperties.getInstance(storageRoot,
-                                                       janusGraphConfiguration.getStoragePort());
-    }
+    @ConstructorBinding
+    @ConfigurationProperties(prefix = "strongbox.db.cassandra")
+    public static class DbImportCassandraEmbeddedProperties extends CassandraEmbeddedProperties {
 
+        public DbImportCassandraEmbeddedProperties(@Value("${strongbox.db.janusgraph.storage.root}") String storageRoot,
+                                                   int port,
+                                                   String configLocatoion)
+        {
+            super(storageRoot, port, configLocatoion);
+        }
+        
+    }
 }
