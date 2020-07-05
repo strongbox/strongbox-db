@@ -7,7 +7,7 @@ public interface Edges
     String ARTIFACT_HAS_TAGS = "ArtifactHasTags";
     String ARTIFACT_GROUP_HAS_ARTIFACTS = "ArtifactGroupHasArtifacts";
     String ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS = "ArtifactGroupHasTaggedArtifacts";
-    
     String EXTENDS = "Extends";
-
+    String USER_HAS_SECURITY_ROLES = "UserHasSecurityRoles";
+    
 }

@@ -5,6 +5,7 @@ import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_GROUP_HAS_TAGGED
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Edges.ARTIFACT_HAS_TAGS;
 import static org.carlspring.strongbox.db.schema.Edges.EXTENDS;
+import static org.carlspring.strongbox.db.schema.Edges.USER_HAS_SECURITY_ROLES;
 import static org.carlspring.strongbox.db.schema.Properties.ARTIFACT_FILE_EXISTS;
 import static org.carlspring.strongbox.db.schema.Properties.CHECKSUMS;
 import static org.carlspring.strongbox.db.schema.Properties.COORDINATES_ABI;
@@ -35,7 +36,6 @@ import static org.carlspring.strongbox.db.schema.Properties.LAST_USED;
 import static org.carlspring.strongbox.db.schema.Properties.NAME;
 import static org.carlspring.strongbox.db.schema.Properties.PASSWORD;
 import static org.carlspring.strongbox.db.schema.Properties.REPOSITORY_ID;
-import static org.carlspring.strongbox.db.schema.Properties.ROLES;
 import static org.carlspring.strongbox.db.schema.Properties.SECURITY_TOKEN_KEY;
 import static org.carlspring.strongbox.db.schema.Properties.SIZE_IN_BYTES;
 import static org.carlspring.strongbox.db.schema.Properties.SOURCE_ID;
@@ -53,9 +53,10 @@ import static org.carlspring.strongbox.db.schema.Vertices.NUGET_ARTIFACT_COORDIN
 import static org.carlspring.strongbox.db.schema.Vertices.PYPI_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.RAW_ARTIFACT_COORDINATES;
 import static org.carlspring.strongbox.db.schema.Vertices.USER;
-import static org.janusgraph.core.Multiplicity.ONE2MANY;
+import static org.carlspring.strongbox.db.schema.Vertices.SECURITY_ROLE;
 import static org.janusgraph.core.Multiplicity.MANY2ONE;
 import static org.janusgraph.core.Multiplicity.MULTI;
+import static org.janusgraph.core.Multiplicity.ONE2MANY;
 import static org.janusgraph.core.Multiplicity.ONE2ONE;
 
 import java.util.Arrays;
@@ -135,9 +136,9 @@ public class StrongboxSchema
         for (Entry<String, String> relationIndex : relationIndexes.entrySet())
         {
             logger.info(String.format("Wait index [%s] to be registered.", relationIndex.getKey()));
-            ManagementSystem.awaitRelationIndexStatus(jg, relationIndex.getKey(), relationIndex.getValue()).call();           
+            ManagementSystem.awaitRelationIndexStatus(jg, relationIndex.getKey(), relationIndex.getValue()).call();
         }
-        
+
         jgm = jg.openManagement();
         try
         {
@@ -151,13 +152,12 @@ public class StrongboxSchema
             jgm.rollback();
             throw new RuntimeException("Failed to enable indexes.", e);
         }
-        
+
         jgm = jg.openManagement();
         try
         {
             logger.info(String.format("Schema: %n%s", jgm.printSchema()));
-        }
-        finally
+        } finally
         {
             jgm.rollback();
         }
@@ -174,7 +174,7 @@ public class StrongboxSchema
             jgm.updateIndex(jgm.getGraphIndex(janusGraphIndex), SchemaAction.ENABLE_INDEX).get();
         }
     }
-    
+
     protected void enableRelationIndexes(JanusGraphManagement jgm,
                                          Map<String, String> indexes)
         throws InterruptedException,
@@ -184,15 +184,17 @@ public class StrongboxSchema
         for (Entry<String, String> e : entrySet)
         {
             logger.info(String.format("Enabling index [%s].", e.getKey()));
-            jgm.updateIndex(jgm.getRelationIndex(jgm.getRelationType(e.getValue()), e.getKey()), SchemaAction.ENABLE_INDEX).get();
+            jgm.updateIndex(jgm.getRelationIndex(jgm.getRelationType(e.getValue()), e.getKey()),
+                            SchemaAction.ENABLE_INDEX)
+               .get();
         }
     }
 
     protected Map<String, String> createRelationIndexes(JanusGraph jg,
-                                                JanusGraphManagement jgm)
+                                                        JanusGraphManagement jgm)
     {
         Map<String, String> result = new HashMap<>();
-        
+
         String name = ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
         if (!jgm.containsGraphIndex(name))
         {
@@ -202,10 +204,10 @@ public class StrongboxSchema
                                jgm.getPropertyKey(TAG_NAME));
             result.put(name, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS);
         }
-        
+
         return result;
     }
-    
+
     protected Set<String> createIndexes(JanusGraph jg,
                                         JanusGraphManagement jgm)
         throws InterruptedException
@@ -244,7 +246,12 @@ public class StrongboxSchema
                               Vertex.class,
                               jgm.getVertexLabel(USER),
                               true,
-                              jgm.getPropertyKey(UUID)).ifPresent(result::add);     
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
+        buildIndexIfNecessary(jgm,
+                              Vertex.class,
+                              jgm.getVertexLabel(SECURITY_ROLE),
+                              true,
+                              jgm.getPropertyKey(UUID)).ifPresent(result::add);
 
         return result;
     }
@@ -265,6 +272,7 @@ public class StrongboxSchema
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_TAG);
         makeVertexLabelIfDoesNotExist(jgm, ARTIFACT_ID_GROUP);
         makeVertexLabelIfDoesNotExist(jgm, USER);
+        makeVertexLabelIfDoesNotExist(jgm, SECURITY_ROLE);
 
         // Edges
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_HAS_ARTIFACT_COORDINATES, MANY2ONE);
@@ -272,6 +280,7 @@ public class StrongboxSchema
         makeEdgeLabelIfDoesNotExist(jgm, EXTENDS, ONE2ONE);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_ARTIFACTS, ONE2MANY);
         makeEdgeLabelIfDoesNotExist(jgm, ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS, MULTI);
+        makeEdgeLabelIfDoesNotExist(jgm, USER_HAS_SECURITY_ROLES, MULTI);
 
         // Add property constraints
         applyPropertyConstraints(jgm);
@@ -293,7 +302,7 @@ public class StrongboxSchema
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_ARTIFACTS),
                           jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                           jgm.getVertexLabel(ARTIFACT));
-        
+
         jgm.addConnection(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS),
                           jgm.getVertexLabel(ARTIFACT_ID_GROUP),
                           jgm.getVertexLabel(ARTIFACT));
@@ -317,6 +326,10 @@ public class StrongboxSchema
         jgm.addConnection(jgm.getEdgeLabel(EXTENDS),
                           jgm.getVertexLabel(PYPI_ARTIFACT_COORDINATES),
                           jgm.getVertexLabel(GENERIC_ARTIFACT_COORDINATES));
+
+        jgm.addConnection(jgm.getEdgeLabel(USER_HAS_SECURITY_ROLES),
+                          jgm.getVertexLabel(USER),
+                          jgm.getVertexLabel(SECURITY_ROLE));
 
     }
 
@@ -427,14 +440,18 @@ public class StrongboxSchema
                                      UUID,
                                      PASSWORD,
                                      ENABLED,
-                                     ROLES,
                                      SECURITY_TOKEN_KEY,
                                      SOURCE_ID,
                                      CREATED,
                                      LAST_UPDATED);
-        
-        addEdgePropertyConstraints(jgm, 
-                                   ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS, 
+
+        addVertexPropertyConstraints(jgm,
+                                     SECURITY_ROLE,
+                                     UUID,
+                                     CREATED);
+
+        addEdgePropertyConstraints(jgm,
+                                   ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS,
                                    TAG_NAME);
     }
 
@@ -448,7 +465,7 @@ public class StrongboxSchema
             jgm.addProperties(vertexLabel, jgm.getPropertyKey(propertyKey));
         }
     }
-    
+
     private void addEdgePropertyConstraints(JanusGraphManagement jgm,
                                             String label,
                                             String... propertykeys)
@@ -521,7 +538,6 @@ public class StrongboxSchema
         // User
         makePropertyKeyIfDoesNotExist(jgm, PASSWORD, String.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, ENABLED, Boolean.class, Cardinality.SINGLE);
-        makePropertyKeyIfDoesNotExist(jgm, ROLES, String.class, Cardinality.SET);
         makePropertyKeyIfDoesNotExist(jgm, SECURITY_TOKEN_KEY, String.class, Cardinality.SINGLE);
         makePropertyKeyIfDoesNotExist(jgm, SOURCE_ID, String.class, Cardinality.SINGLE);
     }
@@ -530,10 +546,11 @@ public class StrongboxSchema
                                                    final Class<? extends Element> elementType,
                                                    final JanusGraphSchemaType schemaType,
                                                    final boolean unique,
-                                                   final PropertyKey... properties){
+                                                   final PropertyKey... properties)
+    {
         return buildIndexIfNecessary(jgm, elementType, schemaType, unique, true, properties);
     }
-    
+
     private Optional<String> buildIndexIfNecessary(final JanusGraphManagement jgm,
                                                    final Class<? extends Element> elementType,
                                                    final JanusGraphSchemaType schemaType,
@@ -598,16 +615,16 @@ public class StrongboxSchema
     }
 
     private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
-                                               final String name,
-                                               final Class<?> dataType)
+                                                                final String name,
+                                                                final Class<?> dataType)
     {
         return makePropertyKeyIfDoesNotExist(jgm, name, dataType, null);
     }
 
     private Optional<PropertyKey> makePropertyKeyIfDoesNotExist(final JanusGraphManagement jgm,
-                                               final String name,
-                                               final Class<?> dataType,
-                                               final Cardinality cardinality)
+                                                                final String name,
+                                                                final Class<?> dataType,
+                                                                final Cardinality cardinality)
     {
         if (jgm.containsPropertyKey(name))
         {

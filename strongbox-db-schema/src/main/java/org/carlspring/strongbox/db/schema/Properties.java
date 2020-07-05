@@ -21,7 +21,6 @@ public interface Properties
     String USERNAME = "username";
     String PASSWORD = "password";
     String ENABLED = "enabled";
-    String ROLES = "roles";
     String SECURITY_TOKEN_KEY = "securityTokenKey";
     String SOURCE_ID = "sourceId";
     String FILE_NAMES = "filenames";
