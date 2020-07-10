@@ -10,3 +10,6 @@ strongbox:
         password: cassandra
         host: 127.0.0.1
         port: 49142
+    cassandra:
+        storage-root: ./target/db
+        config-locatoion: file:./target/etc/conf/cassandra.yaml

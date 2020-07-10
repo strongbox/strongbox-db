@@ -1,9 +1,16 @@
 package org.carlspring.strongbox.dbimport;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.carlspring.strongbox.db.schema.StrongboxSchema;
 import org.janusgraph.core.JanusGraph;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +26,27 @@ import org.strongbox.db.server.JanusGraphWithEmbeddedCassandra;
  * @author sbespalov
  */
 @Configuration
+@ConfigurationPropertiesScan
 class EmbeddedDbServerConfiguration
 {
 
     @Bean
     JanusGraphServer embeddedDbServer(CassandraEmbeddedConfiguration cassandraConfiguration,
                                       JanusGraphConfiguration janusGraphConfiguration)
+        throws IOException
     {
+        try (InputStream in = JanusGraphWithEmbeddedCassandra.class.getResourceAsStream("/etc/conf/cassandra.yaml"))
+        {
+            Path storageRoot = Paths.get(cassandraConfiguration.getStorageRoot())
+                                    .resolve("..")
+                                    .resolve("etc")
+                                    .resolve("conf");
+            Files.createDirectories(storageRoot);
+            Files.copy(in,
+                       storageRoot.resolve("cassandra.yaml"),
+                       StandardCopyOption.REPLACE_EXISTING);
+        }
+
         return new JanusGraphWithEmbeddedCassandra(cassandraConfiguration, janusGraphConfiguration);
     }
 
@@ -37,7 +58,7 @@ class EmbeddedDbServerConfiguration
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "strongbox.db.janus-graph")
+    @ConfigurationProperties(prefix = "strongbox.db.janusgraph.storage")
     JanusGraphConfiguration janusGraphConfiguration()
     {
         return new JanusGraphProperties();
@@ -45,14 +66,14 @@ class EmbeddedDbServerConfiguration
 
     @ConstructorBinding
     @ConfigurationProperties(prefix = "strongbox.db.cassandra")
-    public static class DbImportCassandraEmbeddedProperties extends CassandraEmbeddedProperties {
+    public static class DbImportCassandraEmbeddedProperties extends CassandraEmbeddedProperties
+    {
 
-        public DbImportCassandraEmbeddedProperties(@Value("${strongbox.db.janusgraph.storage.root}") String storageRoot,
-                                                   int port,
+        public DbImportCassandraEmbeddedProperties(String storageRoot,
                                                    String configLocatoion)
         {
-            super(storageRoot, port, configLocatoion);
+            super(storageRoot, configLocatoion);
         }
-        
+
     }
 }

@@ -45,8 +45,6 @@ public class CassandraEmbeddedPropertiesLoader extends YamlConfigurationLoader
             throw new ConfigurationException(e.getMessage(), e);
         }
 
-        config.native_transport_port = configurationLocal.getPort();
-
         String storageFolder = configuration.getStorageRoot();
         // ------------------------
         // Storage locations

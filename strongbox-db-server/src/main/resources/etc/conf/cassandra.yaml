@@ -1,7 +1,7 @@
 # ------------------------
 # Generic configuration
 # ------------------------
-cluster_name: Strongbox
+cluster_name: Test Cluster
 snapshot_before_compaction: false
 auto_snapshot: false
 
@@ -15,12 +15,12 @@ permissions_validity_in_ms: 2000
 ## ------------------------
 ## Network
 ## ------------------------
-start_rpc: false; ## disable thrift - it's deprecated and should not be used!
+start_rpc: false ## disable thrift - it's deprecated and should not be used!
 listen_address: 127.0.0.1
 storage_port: 7010
 ssl_storage_port: 7011
 start_native_transport: true
-native_transport_port: port
+native_transport_port: 49142
 native_transport_max_threads: 256
 
 ## Coordinator related
@@ -72,7 +72,7 @@ concurrent_materialized_view_writes: 32
 ## - (Default 1024KB ) Total maximum throttle for replaying hints.
 ## Throttling is reduced proportionally to
 ## the number of nodes in the cluster.
-## batchlog_replay_throttle_in_kb: 1024;
+## batchlog_replay_throttle_in_kb: 1024
 
 ## Cache and index settings
 ## - (Default: 64) Granularity of the index of rows within a partition.
@@ -86,7 +86,7 @@ column_index_cache_size_in_kb: 1024
 
 ## Memtable (in-memory structures where Cassandra buffers writes)
 ## https://cassandra.apache.org/doc/latest/architecture/storage_engine.html#memtables
-memtable_allocation_type: Config.MemtableAllocationType.offheap_objects
+memtable_allocation_type: offheap_objects
 ## - Smaller of number of disks or number of cores with a minimum of 2
 ## and a maximum of 8
 ## If your data directories are backed by SSDs, increase this setting to
@@ -115,7 +115,7 @@ commitlog_sync_period_in_ms: 3000 ## sync log every 5s.
 commitlog_total_space_in_mb: 32
 commitlog_segment_size_in_mb: 32
 max_mutation_size_in_kb: 16384
-## ideal_consistency_level: ConsistencyLevel.LOCAL_QUORUM;
+## ideal_consistency_level: LOCAL_QUORUM
 ## ## available in cassandra 4
 
 ## ------------------------
@@ -178,7 +178,7 @@ back_pressure_enabled: false
 ## all - all traffic is compressed
 ## dc - traffic between nodes is compressed
 ## none - no compression (suitable for single nodes)
-internode_compression: Config.InternodeCompression.none
+internode_compression: none
 
 ## Wanr for GC pauses longer than 500ms (usually means heap is near limit)
 gc_warn_threshold_in_ms: 500
