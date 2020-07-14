@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphFactory.Builder;
+import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.graphdb.database.StandardJanusGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +55,7 @@ public abstract class JanusGraphServer implements EmbeddedDbServer
             return janusGraph;
         }
 
-        Builder janusGraphFactoryBuilder = buildJanusGraph(janusGraphProperties);
-        JanusGraph janusGraphLocal = janusGraphFactoryBuilder.open();
+        JanusGraph janusGraphLocal = buildJanusGraph(janusGraphProperties);
 
         try
         {
@@ -73,8 +72,11 @@ public abstract class JanusGraphServer implements EmbeddedDbServer
         return this.janusGraph = janusGraphLocal;
     }
 
-    protected abstract Builder buildJanusGraph(JanusGraphConfiguration configuration);
-
+    protected JanusGraph buildJanusGraph(JanusGraphConfiguration configuration)
+    {
+        return JanusGraphFactory.open(configuration.getConfigLocation());
+    }
+    
     @PreDestroy
     @Override
     public synchronized void stop()

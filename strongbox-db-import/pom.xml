@@ -54,7 +54,7 @@
                         <configuration>
                             <jvmArguments>-Xmx1024m</jvmArguments>
                             <arguments> 
-                              --strongbox.db.cassandra.storage-root=${project.build.directory}/db
+                              --strongbox.dbimport.root=${project.build.directory}/db
                             </arguments>
                         </configuration>
                     </execution>
