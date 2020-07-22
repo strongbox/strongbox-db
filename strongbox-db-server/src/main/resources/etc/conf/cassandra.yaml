@@ -15,7 +15,8 @@ permissions_validity_in_ms: 2000
 ## ------------------------
 ## Network
 ## ------------------------
-start_rpc: false ## disable thrift - it's deprecated and should not be used!
+## start_rpc - disable thrift - it's deprecated and should not be used!
+start_rpc: false
 listen_address: 127.0.0.1
 storage_port: 7010
 ssl_storage_port: 7011
@@ -48,10 +49,12 @@ seed_provider:
 ## ------------------------
 disk_optimization_strategy: ssd
 disk_failure_policy: stop
-trickle_fsync: true ## good on SSDs, probably bad on hdd
-trickle_fsync_interval_in_kb: 10240 ## default: 10240
+## trickle_fsync is good on SSDs, probably bad on hdd
+trickle_fsync: true
+trickle_fsync_interval_in_kb: 10240
 concurrent_compactors: 2
-compaction_throughput_mb_per_sec: 128 ## 128+ for SSD, 16 for hdd
+## compaction_throughput_mb_per_sec - 128+ for SSD, 16 for hdd
+compaction_throughput_mb_per_sec: 128
 ## - Usually (16 × number_of_drives)
 concurrent_reads: 32
 ## - Writes in Cassandra are rarely I/O bound, so the ideal number of
@@ -98,7 +101,8 @@ memtable_flush_writers: 2
 ## helps to smoothly transfer reads
 ## between the SSTables by reducing page cache churn and keeps hot rows
 ## hot.
-sstable_preemptive_open_interval_in_mb: 64 ## default 50
+## default 50
+sstable_preemptive_open_interval_in_mb: 64
 
 ## Enable / disable CDC functionality on a per-node basis. This modifies
 ## the logic used for write path allocation rejection
@@ -111,7 +115,8 @@ cdc_enabled: false
 ## every commitlog_sync_period_in_ms milliseconds. What this means, is
 ## the commit is
 commitlog_sync: periodic
-commitlog_sync_period_in_ms: 3000 ## sync log every 5s.
+## sync log every 3s.
+commitlog_sync_period_in_ms: 3000
 commitlog_total_space_in_mb: 32
 commitlog_segment_size_in_mb: 32
 max_mutation_size_in_kb: 16384
