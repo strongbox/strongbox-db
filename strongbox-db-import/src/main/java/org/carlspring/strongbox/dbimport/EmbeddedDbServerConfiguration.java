@@ -65,7 +65,7 @@ class EmbeddedDbServerConfiguration
         extractConfigurationFile(dbImportRoot, "janusgraph-cassandra.properties");
         Path configFilePath = Paths.get(dbImportRoot).resolve("etc").resolve("conf").resolve("janusgraph-cassandra.properties");
 
-        return new JanusGraphProperties(configFilePath.toAbsolutePath().toString());
+        return new JanusGraphProperties( String.format("file:%s", configFilePath.toAbsolutePath().toString()));
     }
 
     @Bean

@@ -1,12 +1,18 @@
 package org.strongbox.db.server;
 
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
+import org.janusgraph.diskstorage.configuration.backend.CommonsConfiguration;
 import org.janusgraph.graphdb.database.StandardJanusGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +80,18 @@ public abstract class JanusGraphServer implements EmbeddedDbServer
 
     protected JanusGraph buildJanusGraph(JanusGraphConfiguration configuration)
     {
-        return JanusGraphFactory.open(configuration.getConfigLocation());
+        String configLocation = configuration.getConfigLocation();
+        try
+        {
+            URL configLocationUrl = new URL(configLocation);
+            Configuration jgConfiguration = new PropertiesConfiguration(configLocationUrl);
+            
+            return JanusGraphFactory.open(new CommonsConfiguration(jgConfiguration));
+        }
+        catch (MalformedURLException|ConfigurationException e)
+        {
+            throw new RuntimeException(String.format("Invalid configuration [%s].", configLocation), e);
+        }
     }
     
     @PreDestroy
