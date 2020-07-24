@@ -5,13 +5,13 @@ public class CassandraEmbeddedProperties
 {
 
     private final String storageRoot;
-    private final String configLocatoion;
+    private final String configLocation;
 
     public CassandraEmbeddedProperties(String storageRoot,
-                                       String configLocatoion)
+                                       String configLocation)
     {
         this.storageRoot = storageRoot;
-        this.configLocatoion = configLocatoion;
+        this.configLocation = configLocation;
     }
 
     @Override
@@ -21,9 +21,9 @@ public class CassandraEmbeddedProperties
     }
 
     @Override
-    public String getConfigLocatoion()
+    public String getConfigLocation()
     {
-        return configLocatoion;
+        return configLocation;
     }
 
 }

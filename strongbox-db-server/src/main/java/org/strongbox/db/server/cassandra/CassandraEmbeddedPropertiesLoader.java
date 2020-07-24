@@ -38,7 +38,7 @@ public class CassandraEmbeddedPropertiesLoader extends YamlConfigurationLoader
         Config config;
         try
         {
-            config = super.loadConfig(new URL(configurationLocal.getConfigLocatoion()));
+            config = super.loadConfig(new URL(configurationLocal.getConfigLocation()));
         }
         catch (MalformedURLException e)
         {

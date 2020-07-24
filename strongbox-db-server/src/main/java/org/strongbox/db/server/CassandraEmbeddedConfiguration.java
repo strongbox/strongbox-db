@@ -5,6 +5,6 @@ public interface CassandraEmbeddedConfiguration
 
     String getStorageRoot();
 
-    String getConfigLocatoion();
+    String getConfigLocation();
     
 }
