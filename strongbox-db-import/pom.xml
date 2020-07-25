@@ -53,7 +53,9 @@
                         </goals>
                         <configuration>
                             <jvmArguments>-Xmx1024m</jvmArguments>
-                            <arguments>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</arguments>
+                            <arguments> 
+                              --strongbox.dbimport.root=${project.build.directory}
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

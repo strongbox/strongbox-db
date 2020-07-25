@@ -95,9 +95,11 @@ public class StrongboxSchema
 
     private static final Logger logger = LoggerFactory.getLogger(StrongboxSchema.class);
 
-    public void createSchema(JanusGraph jg)
+    public JanusGraph createSchema(JanusGraph jg)
         throws InterruptedException
     {
+        logger.info("Apply schema changes.");
+        
         JanusGraphManagement jgm = jg.openManagement();
         try
         {
@@ -161,6 +163,10 @@ public class StrongboxSchema
         {
             jgm.rollback();
         }
+        
+        logger.info("Schema changes applied.");
+        
+        return jg;
     }
 
     protected void enableIndexes(JanusGraphManagement jgm,
@@ -196,7 +202,7 @@ public class StrongboxSchema
         Map<String, String> result = new HashMap<>();
 
         String name = ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS + "By" + StringUtils.capitalize(TAG_NAME);
-        if (!jgm.containsGraphIndex(name))
+        if (!jgm.containsRelationIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS), name))
         {
             jgm.buildEdgeIndex(jgm.getEdgeLabel(ARTIFACT_GROUP_HAS_TAGGED_ARTIFACTS),
                                name,
