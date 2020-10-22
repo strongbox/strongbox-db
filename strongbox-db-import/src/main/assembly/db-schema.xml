@@ -13,4 +13,10 @@
             <outputDirectory>META-INF/resources/strongbox/db/strongbox</outputDirectory>
         </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>src/main/resources/META-INF/LICENSE</source>
+            <outputDirectory>META-INF</outputDirectory>
+        </file>
+    </files>
 </assembly>
