@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.carlspring.strongbox</groupId>
         <artifactId>strongbox-db</artifactId>
-        <version>1.0-PR-19-SNAPSHOT</version>
+        <version>1.0-PR-32-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -72,9 +72,9 @@
                                 --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
                                 --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
                             </jvmArguments>
-                            <arguments>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</arguments>
                             <arguments>
-                              --strongbox.dbimport.root=${project.build.directory}
+                                <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -123,9 +123,9 @@
                                     <jvmArguments>
                                         -Xmx1024m
                                     </jvmArguments>
-                                    <arguments>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</arguments>
                                     <arguments>
-                                        --strongbox.dbimport.root=${project.build.directory}
+                                        <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                        <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -184,9 +184,9 @@
                                         --add-opens
                                         jdk.management/com.sun.management.internal=ALL-UNNAMED
                                     </jvmArguments>
-                                    <arguments>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</arguments>
                                     <arguments>
-                                        --strongbox.dbimport.root=${project.build.directory}
+                                        <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                        <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

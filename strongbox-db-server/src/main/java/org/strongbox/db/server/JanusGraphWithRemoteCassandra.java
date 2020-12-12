@@ -1,5 +1,7 @@
 package org.strongbox.db.server;
 
+import java.util.function.Supplier;
+
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.slf4j.Logger;
@@ -13,9 +15,10 @@ public class JanusGraphWithRemoteCassandra extends JanusGraphServer
 
     private static final Logger logger = LoggerFactory.getLogger(JanusGraphWithEmbeddedCassandra.class);
 
-    public JanusGraphWithRemoteCassandra(JanusGraphConfiguration janusGraphProperties)
+    public JanusGraphWithRemoteCassandra(JanusGraphConfiguration janusGraphProperties,
+                                         Supplier<String> idBlockQueueSupplier)
     {
-        super(janusGraphProperties);
+        super(janusGraphProperties, idBlockQueueSupplier);
     }
 
     @Override
