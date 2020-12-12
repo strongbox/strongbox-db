@@ -96,7 +96,7 @@ public class SchemaMigrationTest
     {
         JanusGraphConfiguration janusGraphConfiguration = new JanusGraphProperties(
                 "file:./target/etc/conf/janusgraph-inmemory.properties");
-        janusGraphServer = new InMemoryJanusGraphServer(janusGraphConfiguration);
+        janusGraphServer = new InMemoryJanusGraphServer(janusGraphConfiguration, () -> null);
         janusGraphServer.start();
     }
 
@@ -108,10 +108,10 @@ public class SchemaMigrationTest
         JanusgraphChangelogStorage changelogStorage = new JanusgraphChangelogStorage(jg);
         TreeSet<Changeset> changeSets = new TreeSet<>();
         StrongboxSchema strongboxSchema = new StrongboxSchema(changeSets);
-        
+
         strongboxSchema.createSchema(jg);
         assertThat(changelogStorage.getSchemaVersion().getVersion()).isEqualTo(ChangesetVersionValue.ZERO.getVersion());
-        
+
         changeSets.add(V2);
         strongboxSchema.createSchema(jg);
         assertThat(changelogStorage.getSchemaVersion().getVersion()).isEqualTo(V2.getVersion());

@@ -2,6 +2,7 @@ package org.strongbox.db.server;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,7 +15,7 @@ import org.strongbox.db.server.cassandra.CassandraEmbeddedPropertiesLoader;
 
 /**
  * Embedded JanusGraph+Cassandra server
- * 
+ *
  * @author sbespalov
  */
 public class JanusGraphWithEmbeddedCassandra extends JanusGraphWithRemoteCassandra
@@ -26,10 +27,10 @@ public class JanusGraphWithEmbeddedCassandra extends JanusGraphWithRemoteCassand
     private volatile CassandraDaemon cassandraDaemon;
 
     public JanusGraphWithEmbeddedCassandra(CassandraEmbeddedConfiguration cassandraEmbeddedProperties,
-                                           JanusGraphConfiguration janusGraphProperties)
+                                           JanusGraphConfiguration janusGraphProperties,
+                                           Supplier<String> idBlockQueueSupplier)
     {
-        super(janusGraphProperties);
-
+        super(janusGraphProperties, idBlockQueueSupplier);
         this.cassandraEmbeddedProperties = cassandraEmbeddedProperties;
     }
 

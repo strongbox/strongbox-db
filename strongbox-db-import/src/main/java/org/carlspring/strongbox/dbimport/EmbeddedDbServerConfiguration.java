@@ -32,7 +32,7 @@ class EmbeddedDbServerConfiguration
                                       JanusGraphConfiguration janusGraphConfiguration)
         throws IOException
     {
-        return new JanusGraphWithEmbeddedCassandra(cassandraConfiguration, janusGraphConfiguration);
+        return new JanusGraphWithEmbeddedCassandra(cassandraConfiguration, janusGraphConfiguration, () -> null);
     }
 
     @Bean
