@@ -8,37 +8,28 @@
     <parent>
         <groupId>org.carlspring.strongbox</groupId>
         <artifactId>strongbox-db</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-PR-19-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>strongbox-db-import</artifactId>
     <inceptionYear>2019</inceptionYear>
 
-    <properties>
-        <strongbox.orientdb.path>${project.build.directory}/db</strongbox.orientdb.path>
-    </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>strongbox-db-liquibase</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>strongbox-db-server</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-db-schema</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-jdbc</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -46,49 +37,9 @@
             <artifactId>commons-beanutils</artifactId>
         </dependency>
 
-        <!-- liquibase -->
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.10.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.ant</groupId>
-                    <artifactId>ant</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.unbroken-dome.liquibase-orientdb</groupId>
-            <artifactId>liquibase-orientdb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mattbertolini</groupId>
-            <artifactId>liquibase-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
-
-        <!-- helpers -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -101,7 +52,30 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <jvmArguments>-Xmx1024m</jvmArguments>
+                            <jvmArguments>
+                                -Xmx1024m
+                                -Djdk.attach.allowAttachSelf=true
+                                --add-exports java.base/jdk.internal.misc=ALL-UNNAMED
+                                --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
+                                --add-exports java.base/sun.nio.ch=ALL-UNNAMED
+                                --add-exports java.management.rmi/com.sun.jmx.remote.internal.rmi=ALL-UNNAMED
+                                --add-exports java.rmi/sun.rmi.registry=ALL-UNNAMED
+                                --add-exports java.rmi/sun.rmi.server=ALL-UNNAMED
+                                --add-exports java.sql/java.sql=ALL-UNNAMED
+
+                                --add-opens java.base/java.lang.module=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.ref=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.math=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.module=ALL-UNNAMED
+                                --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
+                                --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
+                            </jvmArguments>
+                            <arguments>
+                                <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -120,11 +94,107 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/db-schema.xml</descriptor>
                             </descriptors>
-                        </configuration>                        
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jdk-default</id>
+            <activation>
+                <jdk>!11</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>strongbox-export-db</id>
+                                <phase>prepare-package</phase> <!-- bind to the packaging phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <jvmArguments>
+                                        -Xmx1024m
+                                    </jvmArguments>
+                                    <arguments>
+                                        <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                        <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>strongbox-export-db</id>
+                                <phase>prepare-package</phase> <!-- bind to the packaging phase -->
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <jvmArguments>
+                                        -Xmx1024m
+                                        -Djdk.attach.allowAttachSelf=true
+                                        --add-exports java.base/jdk.internal.misc=ALL-UNNAMED
+                                        --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
+                                        --add-exports java.base/sun.nio.ch=ALL-UNNAMED
+                                        --add-exports
+                                        java.management.rmi/com.sun.jmx.remote.internal.rmi=ALL-UNNAMED
+                                        --add-exports
+                                        java.rmi/sun.rmi.registry=ALL-UNNAMED
+                                        --add-exports
+                                        java.rmi/sun.rmi.server=ALL-UNNAMED
+                                        --add-exports
+                                        java.sql/java.sql=ALL-UNNAMED
+
+                                        --add-opens
+                                        java.base/java.lang.module=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.loader=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.ref=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.reflect=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.math=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.module=ALL-UNNAMED
+                                        --add-opens
+                                        java.base/jdk.internal.util.jar=ALL-UNNAMED
+                                        --add-opens
+                                        jdk.management/com.sun.management.internal=ALL-UNNAMED
+                                    </jvmArguments>
+                                    <arguments>
+                                        <argument>--strongbox.db.janus-graph.storage-root=${project.build.directory}/db</argument>
+                                        <argument>--strongbox.dbimport.root=${project.build.directory}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

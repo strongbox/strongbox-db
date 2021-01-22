@@ -9,8 +9,8 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}/db/strongbox</directory>
-            <outputDirectory>META-INF/resources/strongbox/db/strongbox</outputDirectory>
+            <directory>${project.build.directory}/db</directory>
+            <outputDirectory>META-INF/org/carlsparing/strongbox/db</outputDirectory>
         </fileSet>
     </fileSets>
     <files>

@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.carlspring.strongbox</groupId>
         <artifactId>strongbox-db</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-PR-19-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -21,37 +21,80 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
-    <dependencies>    
+
+    <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-core</artifactId>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-cql</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-client</artifactId>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-inmemory</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-server</artifactId>
+            <groupId>org.apache.cassandra</groupId>
+            <artifactId>cassandra-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-object</artifactId>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-graphdb</artifactId>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-driver</artifactId>
         </dependency>
-        
-        <dependency>            
-            <groupId>org.webjars</groupId>
-            <artifactId>orientdb-studio</artifactId>
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-server</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-groovy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opencypher.gremlin</groupId>
+            <artifactId>cypher-gremlin-neo4j-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opencypher.gremlin</groupId>
+            <artifactId>cypher-gremlin-server-plugin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-api</artifactId>
+        </dependency>
+
+        <!--dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-bolt-driver</artifactId>
+        </dependency-->
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
