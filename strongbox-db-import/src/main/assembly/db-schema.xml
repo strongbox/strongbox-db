@@ -11,6 +11,9 @@
         <fileSet>
             <directory>${project.build.directory}/db</directory>
             <outputDirectory>META-INF/org/carlsparing/strongbox/db</outputDirectory>
+            <excludes>
+                <exclude>**/cassandra/commitlog/**</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
 </assembly>
